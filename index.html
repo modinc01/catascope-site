@@ -123,7 +123,7 @@ section.alt{background:var(--bg2)}
 .defs dd{margin:0;color:var(--muted)}
 .defs dd .num{color:var(--ink)}
 /* pricing */
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;align-items:stretch;max-width:760px}
 @media(max-width:760px){.plans{grid-template-columns:1fr}}
 .plan{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:26px 24px;display:flex;flex-direction:column;gap:10px;position:relative}
 .plan.rec{border-color:var(--green);box-shadow:var(--shadow)}
@@ -249,9 +249,6 @@ footer a{color:var(--muted);text-decoration:none}
     <div class="plan rec"><span class="tag">おすすめ</span><h3>プロ</h3><div class="price num">¥19,800<small>/月（税込）</small></div><div class="who">会場で画像検索を多用する業者向け</div>
       <ul><li>検索 1,500 回/月</li><li>画像・範囲選択からの検索 1,500 回/月</li><li>スタンダードの全機能</li><li>優先サポート</li></ul>
       <a class="btn" href="https://buy.stripe.com/test_8x27sN0r62q6dhlbD20Ny01" target="_blank" rel="noopener">7日間無料で試す</a></div>
-    <div class="plan"><h3>講座修了生</h3><div class="price num">割引<small>年払い</small></div><div class="who">LUXROUTE ルイヴィトン講座の修了生向け</div>
-      <ul><li>スタンダードの全機能</li><li>年払い割引（詳細は講座内で案内）</li></ul>
-      <a class="btn ghost" href="#trial">講座内で申し込む</a></div>
   </div>
   <p id="trial" style="color:var(--muted);font-size:12px;margin-top:18px">申し込み後、ライセンスキーをメールでお送りします。Chrome の CataScope 設定画面に貼り付けるだけで使えます。</p>
 </div></section>
