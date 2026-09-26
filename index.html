@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="google-site-verification" content="SZ_Tkquk8f6562Hz_zuHeKnnZdLp-O8YiLBFAAZUar0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CataScope</title>
+<meta name="description" content="Catawiki の過去落札相場を、エコオク・ヤフオク・メルカリの商品ページからワンクリック検索。コンディション別に絞り込み、手数料を引いた円で表示する Chrome 拡張。">
+<link rel="icon" href="icon48.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF;--bg2:#F5F5F6;--card:#FFFFFF;--line:#D2D9E1;--ink:#111111;--muted:#565B60;
+  --green:#0033FF;--green-ink:#FFFFFF;--green-deep:#0026BF;--gold:#0033FF;--gold-soft:#E8EDFF;
+  --pos:#0B7A3B;--pos-soft:#E1F5E8;--neg:#C1272D;--neg-soft:#FBE3E4;--neu-soft:#F0F1F5;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 18px 40px rgba(0,51,255,.08);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0F1220;--bg2:#171B2B;--card:#1B2033;--line:#2B3147;--ink:#ECEEF5;--muted:#A3A9BA;
+  --green:#6B86FF;--green-ink:#0A0F2A;--green-deep:#0B1650;--gold:#6B86FF;--gold-soft:#1E2A5E;
+  --pos:#5CCB8C;--pos-soft:#173425;--neg:#F08A8A;--neg-soft:#3F2224;--neu-soft:#262B3D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1220;--bg2:#171B2B;--card:#1B2033;--line:#2B3147;--ink:#ECEEF5;--muted:#A3A9BA;
+  --green:#6B86FF;--green-ink:#0A0F2A;--green-deep:#0B1650;--gold:#6B86FF;--gold-soft:#1E2A5E;
+  --pos:#5CCB8C;--pos-soft:#173425;--neg:#F08A8A;--neg-soft:#3F2224;--neu-soft:#262B3D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-size:15px;line-height:1.9;-webkit-font-smoothing:antialiased;font-feature-settings:"palt"}
+h1,h2,h3{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;line-height:1.35;text-wrap:balance;margin:0}
+.sans,.eyebrow,.btn,.hd nav,.sites span,.mock .bar,.stat .l,.stat .s,.range .lbl,.mock .foot,.chips,.plan ul,.plan .who,footer,.step::before,.card .k{font-family:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif}
+.num{font-family:"Noto Serif JP","Hiragino Mincho ProN",serif;font-variant-numeric:tabular-nums}
+a{color:var(--green)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:6px;background:var(--green);color:var(--green-ink);font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:15px;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.logo{display:inline-flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;font-weight:800;font-size:18px;letter-spacing:.02em}
+.logo svg{width:24px;height:24px;color:var(--green)}
+/* header */
+.hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.hd nav{display:flex;gap:22px;font-size:13px}
+.hd nav a{color:var(--muted);text-decoration:none}
+.hd nav a:hover{color:var(--ink)}
+@media(max-width:760px){.hd nav{display:none}}
+/* hero */
+.hero{padding-block:64px 56px;background:var(--bg)}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;align-items:center}
+@media(max-width:860px){.hero .wrap{grid-template-columns:1fr}}
+.hero h1{font-size:clamp(32px,4.6vw,52px);font-weight:600;letter-spacing:.01em}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero p.lead{font-size:16px;color:var(--ink);margin:20px 0 26px;max-width:36em}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.hero .cta small{color:var(--muted);font-size:12px;display:block;width:100%}
+.sites{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.sites span{font-size:12px;border:1px solid var(--line);border-radius:4px;padding:4px 12px;color:var(--muted);background:var(--bg2)}
+/* mock verdict card */
+.mock{background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:18px 18px 16px;position:relative}
+.mock .bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-bottom:12px}
+.mock .bar i{width:10px;height:10px;border-radius:50%;background:var(--line);display:inline-block}
+.mock .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.badge{font-size:13px;font-weight:700;padding:5px 12px;border-radius:4px;background:var(--pos-soft);color:var(--pos)}
+.mock .q{font-size:12.5px;color:var(--ink)}
+.mock .q b{background:var(--gold-soft);border:1px solid var(--gold);color:var(--gold);border-radius:4px;padding:0 6px;font-size:11px;margin-left:6px;font-family:"Noto Sans JP",sans-serif}
+.grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--bg2);border-radius:6px;padding:9px 11px}
+.stat .l{font-size:10.5px;color:var(--muted)}
+.stat .v{font-size:20px;font-weight:600;margin-top:2px;line-height:1.2}
+.stat .v.pos{color:var(--pos)}
+.stat .s{font-size:10px;color:var(--muted)}
+.stat.cost{border:1px dashed var(--line);background:transparent}
+.stat.cost .v{font-size:17px}
+.range{margin-top:12px}
+.range .lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:4px}
+.range .track{position:relative;height:9px;border-radius:5px;background:var(--neu-soft)}
+.range .track i{position:absolute;top:-4px;width:4px;height:17px;border-radius:2px;background:var(--green);transform:translateX(-50%)}
+.range .track b{position:absolute;top:-4px;width:2px;height:17px;background:var(--ink);opacity:.45;transform:translateX(-50%)}
+.mock .foot{font-size:10px;color:var(--muted);margin-top:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font-size:10.5px;border:1px solid var(--line);border-radius:4px;padding:3px 9px;color:var(--muted);background:var(--card)}
+.chip.on{background:var(--green);color:var(--green-ink);border-color:var(--green)}
+.stat .v small{font-size:12px;font-weight:400;color:var(--muted)}
+.callout{position:absolute;font-size:11px;background:var(--ink);color:var(--bg);padding:4px 9px;border-radius:6px;font-weight:700;white-space:nowrap}
+/* sections */
+section{padding-block:72px}
+section.alt{background:var(--bg2)}
+.sec-h{max-width:40em;margin-bottom:34px}
+.sec-h h2{font-size:clamp(26px,3.2vw,34px);font-weight:600;margin-top:8px}
+.sec-h p{color:var(--muted);margin:12px 0 0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:760px){.cards{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:22px 22px 20px}
+.card h3{font-size:18px;font-weight:600;margin-bottom:8px}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.card .k{font-size:12px;color:var(--green);font-weight:700;letter-spacing:.06em;margin-bottom:10px;display:block}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:s}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+.step{position:relative;padding:22px 22px 20px 22px;border-top:3px solid var(--green);background:var(--card);border-radius:0 0 8px 8px}
+.step::before{counter-increment:s;content:counter(s);font-weight:700;font-size:13px;color:var(--green);display:block;margin-bottom:8px}
+.step h3{font-size:18px;font-weight:600;margin-bottom:6px}
+.step p{margin:0;font-size:14px;color:var(--muted)}
+.step .pill{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:8px 14px;border-radius:6px;background:var(--green);color:var(--green-ink);font-size:12px;font-weight:700;font-family:"Noto Sans JP",sans-serif}
+.step .pill svg{width:14px;height:14px;color:#fff}
+/* reading the card */
+.read{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+@media(max-width:860px){.read{grid-template-columns:1fr}}
+.defs{display:grid;gap:0}
+.defs div{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px}
+.defs div:first-child{border-top:1px solid var(--line)}
+.defs dt{font-weight:700;color:var(--ink)}
+.defs dd{margin:0;color:var(--muted)}
+.defs dd .num{color:var(--ink)}
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:stretch}
+@media(max-width:760px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:26px 24px;display:flex;flex-direction:column;gap:10px;position:relative}
+.plan.rec{border-color:var(--green);box-shadow:var(--shadow)}
+.plan .tag{position:absolute;top:-12px;left:22px;background:var(--green);color:var(--green-ink);font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;font-family:"Noto Sans JP",sans-serif}
+.plan h3{font-size:19px;font-weight:600}
+.plan .price{font-size:36px;font-weight:600;line-height:1.1}
+.plan .price small{font-size:13px;color:var(--muted);font-weight:400;margin-left:4px}
+.plan ul{list-style:none;padding:0;margin:8px 0 0;font-size:14px;color:var(--muted);display:grid;gap:6px}
+.plan ul li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:10px;vertical-align:middle}
+.plan .btn{margin-top:auto}
+.plan .who{font-size:12px;color:var(--muted)}
+/* faq */
+.faq{max-width:760px}
+.faq details{border-bottom:1px solid var(--line);padding:14px 0}
+.faq details:first-of-type{border-top:1px solid var(--line)}
+.faq summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::after{content:"+";color:var(--green);font-weight:400;font-size:20px;line-height:1}
+.faq details[open] summary::after{content:"−"}
+.faq p{margin:10px 0 0;color:var(--muted);font-size:14px}
+/* close */
+.close{background:var(--green);color:#E8EDFF;text-align:center;padding-block:80px}
+.close h2{font-size:clamp(28px,3.6vw,40px);font-weight:600;color:#fff}
+.close p{color:#D6DEFF;margin:14px auto 28px;max-width:34em}
+.close .btn{background:#fff;color:var(--green)}
+footer{padding-block:28px;font-size:12px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer nav{display:flex;gap:16px;flex-wrap:wrap}
+footer a{color:var(--muted);text-decoration:none}
+@media (prefers-reduced-motion:no-preference){.mock{animation:rise .7s ease-out both}@keyframes rise{from{transform:translateY(10px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap">
+  <a class="logo" href="#top"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>CataScope</a>
+  <nav><a href="#how">使い方</a><a href="#card">結果画面</a><a href="#pricing">料金</a><a href="#faq">よくある質問</a></nav>
+  <a class="btn" href="#pricing" style="padding:10px 18px;font-size:13px">7日間無料で試す</a>
+</div></header>
+
+<section class="hero" id="top"><div class="wrap">
+  <div>
+    <div class="eyebrow">Catawiki 過去落札相場検索 · Chrome 拡張</div>
+    <h1 style="margin-top:14px">Catawiki で、<br><em>いくらで落ちたか。</em></h1>
+    <p class="lead">Catawiki には終了済みの検索がありません。CataScope は、仕入れ先の商品ページでボタンを1つ押すだけで、直近の落札履歴をコンディション別に、手数料を引いた円で並べます。会場でも30秒。</p>
+    <div class="cta">
+      <a class="btn" href="#pricing">7日間無料で試す</a>
+      <a class="btn ghost" href="#how">使い方を見る</a>
+      <small>クレジットカード登録あり · 期間中の解約は無料 · Chrome / Edge 対応</small>
+    </div>
+    <div class="sites"><span>エコオク（エコリング）</span><span>ヤフオク</span><span>メルカリ</span><span>商品名・画像からも検索</span></div>
+  </div>
+  <div class="mock" aria-label="結果画面の例">
+    <div class="bar"><i></i><i></i><i></i>CataScope 落札相場 · 例：ルイヴィトン スピーディ30</div>
+    <div class="head"><span class="q" style="font-weight:700">LOUIS VUITTON モノグラム スピーディ30 ハンドバッグ<b class="num">M41526</b></span></div>
+    <div class="chips"><span class="chip on">すべて 7</span><span class="chip">Good 3</span><span class="chip">Fair 3</span><span class="chip">New 1</span><span class="chip">売れたのみ</span></div>
+    <div class="grid6">
+      <div class="stat"><div class="l">落札件数</div><div class="v num">5 <small>/ 7 件</small></div><div class="s">売れた / 終了</div></div>
+      <div class="stat"><div class="l">リザーブ到達率</div><div class="v num">71%</div><div class="s">売れた ÷ 終了</div></div>
+      <div class="stat"><div class="l">落札中央値</div><div class="v num">¥68,800</div><div class="s">5 件の売れたロット</div></div>
+      <div class="stat"><div class="l">手取り換算</div><div class="v num">¥60,200</div><div class="s">手数料 12.5% 控除後</div></div>
+      <div class="stat"><div class="l">見積達成率</div><div class="v num">96%</div><div class="s">落札価 ÷ 見積の下限</div></div>
+      <div class="stat"><div class="l">直近の落札</div><div class="v num">¥49,500</div><div class="s">9/22 · Fair · 見積 ¥51,600〜</div></div>
+    </div>
+    <div class="range"><div class="lbl"><span>最安 ¥49,500</span><span>落札価格帯（点＝各落札、青い印＝中央値）</span><span>最高 ¥80,800</span></div><div class="track"><b style="left:0%"></b><b style="left:22%"></b><b style="left:58%"></b><b style="left:76%"></b><b style="left:100%"></b><i style="left:58%"></i></div></div>
+    <div class="foot">為替 €1 = ¥172（ECB 2026-09-24）· 数値は例です</div>
+  </div>
+</div></section>
+
+<section id="problem"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">相場が見えない理由</div><h2>Catawiki には、終了済みの検索がありません。</h2><p>出品中の価格は見えても、実際にいくらで落ちたか、どんな状態の品がいくらだったかは、ロットを1件ずつ開かないと分かりません。</p></div>
+  <div class="cards">
+    <div class="card"><span class="k">相場</span><h3>落札価格が分からない</h3><p>公式サイトの検索は出品中のみ。終了したロットは1件ずつURLを掘らないと見えません。</p></div>
+    <div class="card"><span class="k">状態</span><h3>同じ型番でも、状態で値段が違う</h3><p>Fair と Good では落札価が数万円変わることも。平均値だけ見ても、自分の手元の品の相場は分かりません。</p></div>
+    <div class="card"><span class="k">手取り</span><h3>手数料と為替で、手元に残る額が読めない</h3><p>落札価から出品者手数料を引き、ユーロを円に直す。会場でその計算をしている時間はありません。</p></div>
+  </div>
+</div></section>
+
+<section class="alt" id="how"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">使い方</div><h2>仕入れ先のページから、ボタン1つ。</h2></div>
+  <div class="steps">
+    <div class="step"><h3>商品ページを開く</h3><p>エコオク、ヤフオク、メルカリの商品ページを開きます。CataScope が商品名と画像を自動で読み取ります。</p></div>
+    <div class="step"><h3>「落札相場を見る」を押す</h3><p>画面右下に出るボタンを押すだけ。日本語の商品名は自動で英訳し、型番も抽出します。</p><span class="pill"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/></svg>落札相場を見る</span></div>
+    <div class="step"><h3>30秒で落札履歴</h3><p>Catawiki の直近の落札を集め、状態・落札価・手取り換算・見積・終了日を1画面に並べます。</p></div>
+  </div>
+  <p style="color:var(--muted);font-size:13px;margin-top:22px">商品名・型番を打ち込んでの検索、画像や画像の一部（範囲選択）からの検索にも対応しています。</p>
+</div></section>
+
+<section id="card"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">結果画面の見どころ</div><h2>一覧を出すだけでは終わらない。</h2></div>
+  <div class="read">
+    <dl class="defs">
+      <div><dt>コンディション別</dt><dd>Catawiki が各ロットに付けた状態（New / Good / Fair など）をそのまま表示。ワンクリックでその状態だけに絞り込め、中央値も連動して再計算されます。</dd></div>
+      <div><dt>価格帯バー</dt><dd>最安から最高までの帯に、落札1件ずつを点で打ちます。金の印が中央値。外れ値がひと目で分かります。</dd></div>
+      <div><dt>手取り換算</dt><dd>各落札価から出品者手数料（初期値 <span class="num">12.5%</span>）を引き、ECB の為替で円にした額を併記します。</dd></div>
+      <div><dt>見積との比較</dt><dd>Catawiki の専門家見積と実際の落札価を並べて表示。見積が当てになる品目かどうかが分かります。</dd></div>
+      <div><dt>売れた / 売れ残り</dt><dd>リザーブに届かず終了したロットも色分けして残します。何件中何件が売れたかが数字で出ます。</dd></div>
+      <div><dt>CSV 書き出し</dt><dd>絞り込んだ結果をそのまま CSV に。仕入れ台帳やスプレッドシートに貼れます。</dd></div>
+    </dl>
+    <div>
+      <div class="mock" style="animation:none">
+        <div class="head"><span class="q" style="font-weight:700">ROLEX サブマリーナ 16610<b class="num">16610</b></span></div>
+        <div class="chips"><span class="chip">すべて 12</span><span class="chip on">Good 6</span><span class="chip">Fair 4</span><span class="chip">Excellent 2</span></div>
+        <div class="grid6">
+          <div class="stat"><div class="l">落札件数（Good）</div><div class="v num">4 <small>/ 6 件</small></div><div class="s">売れた / 終了</div></div>
+          <div class="stat"><div class="l">落札中央値（Good）</div><div class="v num">¥1,280,000</div><div class="s">4 件の売れたロット</div></div>
+          <div class="stat"><div class="l">手取り換算</div><div class="v num">¥1,120,000</div><div class="s">手数料 12.5% 控除後</div></div>
+          <div class="stat"><div class="l">見積達成率</div><div class="v num">88%</div><div class="s">落札価 ÷ 見積の下限</div></div>
+          <div class="stat"><div class="l">価格帯（Good）</div><div class="v num">¥1.15M〜1.42M</div><div class="s">最安〜最高</div></div>
+          <div class="stat"><div class="l">直近の落札</div><div class="v num">¥1,310,000</div><div class="s">9/20 · Good · 付属品完備</div></div>
+        </div>
+        <div class="foot">相場は直近の落札からの目安です。状態・付属品・時期で価格は変わります。</div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:14px 0 0">サマリーの下には落札履歴（終了日の新しい順、高い順・安い順に切替）と、いま出品中の競合が並びます。型番が一致した行には印が付きます。</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="alt" id="pricing"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">料金</div><h2>まず7日間、無料で。</h2><p>どのプランも7日間の無料トライアルから始まります。期間中に解約すれば請求はありません。</p></div>
+  <div class="plans">
+    <div class="plan"><h3>スタンダード</h3><div class="price num">¥7,980<small>/月（税込）</small></div><div class="who">月に数十点を仕入れる個人バイヤー向け</div>
+      <ul><li>検索 1,000 回/月</li><li>商品名・型番・商品ページからの検索</li><li>コンディション絞り込み・CSV 書き出し</li><li>円 / EUR / USD 表示</li></ul>
+      <a class="btn ghost" href="https://buy.stripe.com/test_6oU6oJehW8Oucdh22s0Ny00" target="_blank" rel="noopener">7日間無料で試す</a></div>
+    <div class="plan rec"><span class="tag">おすすめ</span><h3>プロ</h3><div class="price num">¥19,800<small>/月（税込）</small></div><div class="who">会場で画像検索を多用する業者向け</div>
+      <ul><li>検索 1,500 回/月</li><li>画像・範囲選択からの検索 1,500 回/月</li><li>スタンダードの全機能</li><li>優先サポート</li></ul>
+      <a class="btn" href="https://buy.stripe.com/test_8x27sN0r62q6dhlbD20Ny01" target="_blank" rel="noopener">7日間無料で試す</a></div>
+    <div class="plan"><h3>講座修了生</h3><div class="price num">割引<small>年払い</small></div><div class="who">LUXROUTE ルイヴィトン講座の修了生向け</div>
+      <ul><li>スタンダードの全機能</li><li>年払い割引（詳細は講座内で案内）</li></ul>
+      <a class="btn ghost" href="#trial">講座内で申し込む</a></div>
+  </div>
+  <p id="trial" style="color:var(--muted);font-size:12px;margin-top:18px">申し込み後、ライセンスキーをメールでお送りします。Chrome の CataScope 設定画面に貼り付けるだけで使えます。</p>
+</div></section>
+
+<section id="faq"><div class="wrap">
+  <div class="sec-h"><div class="eyebrow">よくある質問</div><h2>導入前に、よく聞かれること。</h2></div>
+  <div class="faq">
+    <details><summary>落札データはどこから取っていますか</summary><p>Catawiki の公開されている終了済みロットページから、あなたのブラウザが直接読み取ります。CataScope のサーバーに落札データを蓄積することはありません。</p></details>
+    <details><summary>すべての落札が見えますか</summary><p>いいえ。直近の主要な落札（最大20件）を集めます。ニッチな品目では件数が少ないことがあります。</p></details>
+    <details><summary>表示された相場で売れますか</summary><p>相場は直近の落札からの目安です。中古品は状態・付属品・時期で価格が大きく変わるため、落札価格や売れ行きを保証するものではありません。最終的な入札判断はご自身で行ってください。</p></details>
+    <details><summary>Catawiki の公式ツールですか</summary><p>いいえ。CataScope は Catawiki B.V. とは無関係のサードパーティツールです。</p></details>
+    <details><summary>対応ブラウザは</summary><p>Chrome と、Chrome 拡張が使える Edge で動作します。Safari と Firefox には対応していません。</p></details>
+    <details><summary>解約はどうすれば</summary><p>設定画面の「契約を管理」からいつでも解約できます。解約後は次回更新日まで利用でき、日割り返金はありません。</p></details>
+  </div>
+</div></section>
+
+<section class="close"><div class="wrap">
+  <h2>次の仕入れから、落ちた値段を見て決める。</h2>
+  <p>商品ページを開いて、ボタンを押す。それだけで、Catawiki の落札履歴が状態別に並びます。</p>
+  <a class="btn" href="#pricing">7日間無料で試す</a>
+</div></section>
+
+<footer><div class="wrap">
+  <div>© 2026 CataScope · Catawiki B.V. とは無関係のサードパーティツールです</div>
+  <nav><a href="#">特定商取引法に基づく表記</a><a href="#">プライバシーポリシー</a><a href="#">利用規約</a><a href="#">お問い合わせ</a></nav>
+</div></footer>
+</body>
+</html>
