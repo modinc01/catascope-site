@@ -1,15 +1,36 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>CataScope アクティベーション</title>
-<style>body{font-family:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;background:#fff;color:#111;margin:0;padding:40px 20px;line-height:1.8}main{max-width:640px;margin:0 auto}h1{font-family:"Noto Serif JP","Hiragino Mincho ProN",serif;font-size:22px;color:#0033FF}#cs-activate-status{padding:14px 16px;border-radius:8px;background:#F5F5F6;border:1px solid #D2D9E1;margin:18px 0}#cs-activate-status.ok{background:#E1F5E8;border-color:#0B7A3B}#cs-activate-status.ng{background:#FBE3E4;border-color:#C1272D}ol{padding-left:1.4em}code{background:#F5F5F6;padding:2px 6px;border-radius:4px}</style></head>
+<style>body{font-family:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif;background:#fff;color:#111;margin:0;padding:40px 20px;line-height:1.8}main{max-width:640px;margin:0 auto}h1{font-family:"Noto Serif JP","Hiragino Mincho ProN",serif;font-size:22px;color:#0033FF}#cs-activate-status{padding:14px 16px;border-radius:8px;background:#F5F5F6;border:1px solid #D2D9E1;margin:18px 0}#cs-activate-status.ok{background:#E1F5E8;border-color:#0B7A3B}#cs-activate-status.ng{background:#FBE3E4;border-color:#C1272D}ol{padding-left:1.4em}code{background:#F5F5F6;padding:2px 6px;border-radius:4px}#cs-ref{display:none;margin:22px 0;padding:18px 20px;border:2px solid #0033FF;border-radius:10px;background:#E8EDFF}#cs-ref h2{margin:0 0 8px;font-size:18px;color:#0033FF}#cs-ref p{margin:6px 0}#cs-ref ol{margin:8px 0}#cs-ref .code{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 14px;background:#fff;border-radius:8px;border:1px solid #D2D9E1}#cs-ref .code b{font-size:22px;letter-spacing:.08em}#cs-ref .muted{font-size:12px;color:#565B60}</style></head>
 <body><main>
 <h1>CataScope のアクティベーション</h1>
 <div id="cs-activate-status">拡張が入っていれば、数秒でここに結果が表示されます…</div>
+<section id="cs-ref" aria-live="polite"><h2 id="cs-ref-title"></h2><div id="cs-ref-body"></div><div class="code"><span>あなたの紹介コード</span><b id="cs-ref-code"></b></div></section>
 <p>結果が表示されない場合は、先に拡張をインストールしてから、もう一度このページを開いてください。</p>
 <ol>
-<li><a href="/catascope-extension-0.5.1.zip">拡張ファイル</a>をダウンロードして解凍する</li>
+<li><a href="https://modinc01.github.io/catascope-site/catascope-extension-0.6.2.zip">拡張ファイル</a>をダウンロードして解凍する</li>
 <li>Chrome で <code>chrome://extensions</code> を開き、右上の「デベロッパーモード」を ON</li>
 <li>「パッケージ化されていない拡張機能を読み込む」で解凍したフォルダを選ぶ</li>
 <li>このページを再読み込みする</li>
 </ol>
 <p><a href="/">CataScope トップへ</a></p>
-</main></body></html>
+</main>
+<script>
+(function(){
+  var box=document.getElementById('cs-activate-status'), ref=document.getElementById('cs-ref');
+  var key=new URLSearchParams(location.search).get('key')||'';
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function show(){
+    if(ref.dataset.done) return; ref.dataset.done='1';
+    fetch('/api/referral',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+      if(!d||!d.id||d.enabled===false) return;
+      document.getElementById('cs-ref-title').textContent=d.title||'紹介制度のご案内';
+      document.getElementById('cs-ref-body').innerHTML=(d.lines||[]).map(function(l){return '<p>'+esc(l)+'</p>';}).join('')+(d.steps?'<ol>'+d.steps.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ol>':'')+(d.note?'<p class="muted">'+esc(d.note)+'</p>':'');
+      document.getElementById('cs-ref-code').textContent=key.slice(-8);
+      ref.style.display='block';
+    }).catch(function(){});
+  }
+  new MutationObserver(function(){ if(box.classList.contains('ok')) show(); }).observe(box,{attributes:true,attributeFilter:['class']});
+  if(box.classList.contains('ok')) show();
+})();
+</script>
+</body></html>
