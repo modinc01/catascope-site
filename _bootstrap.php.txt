@@ -1,0 +1,169 @@
+<?php
+// CataScope バックエンド（PHP 8.2 / Xserver 用）。server/（Hono）と同じ API・同じ .env キー
+declare(strict_types=1);
+
+define('APP_DIR', __DIR__);
+$dataDir = getenv('CS_DATA_DIR') ?: dirname(__DIR__) . '/data';
+define('DATA_DIR', $dataDir);
+@mkdir(DATA_DIR . '/uploads', 0755, true);
+
+// .env 読み込み（app と同階層の .env）
+$envFile = dirname(__DIR__) . '/.env';
+if (is_file($envFile)) {
+  $raw = file_get_contents($envFile);
+  $raw = preg_replace('/^\xEF\xBB\xBF/', '', $raw);          // BOM
+  foreach (preg_split('/\r\n|\r|\n/', $raw) as $line) {
+    $line = trim($line);
+    if ($line === '' || $line[0] === '#' || !str_contains($line, '=')) continue;
+    if (str_starts_with($line, 'export ')) $line = substr($line, 7);
+    [$k, $v] = explode('=', $line, 2);
+    $k = trim($k); $v = trim($v);
+    $v = trim($v, "\"'");
+    if ($k !== '') $_ENV[$k] = $v;
+  }
+}
+function env(string $k, ?string $d = null): ?string { return $_ENV[$k] ?? (getenv($k) ?: $d); }
+
+const PLANS = [
+  'trial'           => ['text' => 20,   'image' => 10,   'days' => 7],  // 管理者が手動発行するお試し
+  'standard'        => ['text' => 300,  'image' => 100],                // 月額 4,980円
+  'standard_annual' => ['text' => 300,  'image' => 100],                // 年額 49,800円（Stripe 側で7日トライアル）
+  'pro'             => ['text' => 1500, 'image' => 1500],               // 月額 19,800円
+  'pro_annual'      => ['text' => 1500, 'image' => 1500],               // 年額 180,000円（Stripe 側で7日トライアル）
+  'basic'           => ['text' => 300,  'image' => 100],                // 旧名称（互換）
+  'demo'            => ['text' => 100,  'image' => 30],                 // デモ用（期限なし・毎月リセット）
+  'admin'           => ['text' => 100000, 'image' => 100000],           // 管理者用（実質無制限）
+  'monitor'         => ['text' => 300,  'image' => 100,  'days' => 90], // モニター（90 日無料。trialEndsAt で失効）
+];
+
+// ---- JSON ファイル DB（flock で排他） ----
+final class Db {
+  private static string $path;
+  private static array $db = ['licenses' => []];
+  private static $fh = null;
+  static function open(): void {
+    self::$path = env('DB_PATH') ? (str_starts_with(env('DB_PATH'), '/') ? env('DB_PATH') : dirname(__DIR__) . '/' . ltrim(env('DB_PATH'), './')) : DATA_DIR . '/db.json';
+    @mkdir(dirname(self::$path), 0755, true);
+    self::$fh = fopen(self::$path, 'c+');
+    flock(self::$fh, LOCK_EX);
+    $raw = stream_get_contents(self::$fh);
+    $j = $raw ? json_decode($raw, true) : null;
+    if (is_array($j)) self::$db = $j + ['licenses' => []];
+  }
+  static function save(): void {
+    ftruncate(self::$fh, 0); rewind(self::$fh);
+    fwrite(self::$fh, json_encode(self::$db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    fflush(self::$fh);
+  }
+  static function close(): void { if (self::$fh) { flock(self::$fh, LOCK_UN); fclose(self::$fh); self::$fh = null; } }
+  static function &licenses(): array { return self::$db['licenses']; }
+}
+
+function month(): string { return gmdate('Y-m'); }
+function nowIso(): string { return gmdate('Y-m-d\TH:i:s\Z'); }
+
+function createLicense(?string $email, string $plan = 'trial', ?string $cust = null, ?string $sub = null): array {
+  $key = 'CS-' . strtoupper(bin2hex(random_bytes(4))) . '-' . strtoupper(bin2hex(random_bytes(4)));
+  $lic = ['key' => $key, 'email' => $email, 'plan' => $plan, 'stripeCustomerId' => $cust, 'stripeSubscriptionId' => $sub,
+    'active' => true, 'createdAt' => nowIso(), 'trialEndsAt' => !empty(PLANS[$plan]['days']) ? gmdate('Y-m-d\TH:i:s\Z', time() + PLANS[$plan]['days'] * 86400) : null, 'usage' => new stdClass, 'deviceId' => null];
+  Db::licenses()[$key] = $lic; Db::save();
+  return $lic;
+}
+function findLicense(string $key): ?array { return Db::licenses()[$key] ?? null; }
+function findLicenseByCustomer(string $id): ?array { foreach (Db::licenses() as $l) if (($l['stripeCustomerId'] ?? null) === $id) return $l; return null; }
+function updateLicense(string $key, array $patch): ?array {
+  if (!isset(Db::licenses()[$key])) return null;
+  Db::licenses()[$key] = array_merge(Db::licenses()[$key], $patch); Db::save();
+  return Db::licenses()[$key];
+}
+function effectivePlan(array $lic): ?string {
+  if (empty($lic['active'])) return null;
+  if ($lic['plan'] === 'trial' || !empty(PLANS[$lic['plan']]['days'])) return (!empty($lic['trialEndsAt']) && strtotime($lic['trialEndsAt']) > time()) ? $lic['plan'] : null;
+  return isset(PLANS[$lic['plan']]) ? $lic['plan'] : null;
+}
+function consume(string $key, string $kind): array {
+  $lic = &Db::licenses()[$key];
+  $plan = effectivePlan($lic);
+  if (!$plan) return ['ok' => false, 'error' => 'license_inactive'];
+  $m = month();
+  $usage = is_array($lic['usage']) ? $lic['usage'] : [];
+  $u = $usage[$m] ?? ['text' => 0, 'image' => 0];
+  $limit = PLANS[$plan][$kind];
+  if ($u[$kind] >= $limit) return ['ok' => false, 'error' => ($kind === 'image' && $limit === 0) ? 'plan_no_image' : 'quota_exceeded', 'usage' => $u, 'plan' => $plan];
+  $u[$kind]++; $usage[$m] = $u; $lic['usage'] = $usage; Db::save();
+  return ['ok' => true, 'usage' => $u + ['month' => $m, 'limits' => PLANS[$plan]], 'plan' => $plan];
+}
+function refund(string $key, string $kind): void {
+  $lic = &Db::licenses()[$key]; $m = month();
+  if (is_array($lic['usage']) && isset($lic['usage'][$m][$kind]) && $lic['usage'][$m][$kind] > 0) { $lic['usage'][$m][$kind]--; Db::save(); }
+}
+
+// ---- HTTP ヘルパー ----
+function json(mixed $data, int $status = 200): never {
+  http_response_code($status);
+  header('Content-Type: application/json; charset=utf-8');
+  header('Cache-Control: no-store, no-cache, private, max-age=0');   // Xserver の nginx キャッシュ対策（キー別レスポンスを混ぜない）
+  header('Vary: x-license-key, x-admin-token');
+  echo json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+  Db::close(); exit;
+}
+function body(): array { $j = json_decode(file_get_contents('php://input') ?: '', true); return is_array($j) ? $j : []; }
+function header_(string $n): string { return $_SERVER['HTTP_' . strtoupper(str_replace('-', '_', $n))] ?? ''; }
+
+/** 複数の検索を並列実行（curl_multi）。戻り値は各要素が array（結果）か Throwable */
+function serpMulti(array $paramsList, int $timeout = 20): array {
+  $key = env('SERPAPI_KEY');
+  if (!$key) throw new RuntimeException('SERPAPI_KEY not set');
+  $mh = curl_multi_init(); $chs = [];
+  foreach ($paramsList as $i => $params) {
+    $params['api_key'] = $key;
+    $ch = curl_init('https://serpapi.com/search.json?' . http_build_query($params));
+    curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => $timeout, CURLOPT_CONNECTTIMEOUT => 8]);
+    curl_multi_add_handle($mh, $ch); $chs[$i] = $ch;
+  }
+  do { $st = curl_multi_exec($mh, $running); if ($running) curl_multi_select($mh, 1.0); } while ($running && $st === CURLM_OK);
+  $out = [];
+  foreach ($chs as $i => $ch) {
+    $res = curl_multi_getcontent($ch); $err = curl_error($ch);
+    curl_multi_remove_handle($mh, $ch); curl_close($ch);
+    if ($res === false || $res === '' || $res === null) { $out[$i] = new RuntimeException('serpapi: ' . ($err ?: 'empty')); continue; }
+    $j = json_decode($res, true);
+    if (!is_array($j)) { $out[$i] = new RuntimeException('serpapi: bad response'); continue; }
+    if (!empty($j['error'])) { $out[$i] = new RuntimeException((string)$j['error']); continue; }
+    $out[$i] = $j;
+  }
+  curl_multi_close($mh);
+  return $out;
+}
+
+function serp(array $params): array {
+  $key = env('SERPAPI_KEY');
+  if (!$key) throw new RuntimeException('SERPAPI_KEY not set');
+  $params['api_key'] = $key;
+  $ch = curl_init('https://serpapi.com/search.json?' . http_build_query($params));
+  curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 40]);
+  $res = curl_exec($ch); $err = curl_error($ch); curl_close($ch);
+  if ($res === false) throw new RuntimeException('serpapi: ' . $err);
+  $j = json_decode($res, true);
+  if (!is_array($j)) throw new RuntimeException('serpapi: bad response');
+  if (!empty($j['error'])) throw new RuntimeException($j['error']);
+  return $j;
+}
+
+/** 品目語の推定(検索順位対策)。明示語 > ブランド推定。空文字なら付けない */
+function detectCategory(string $q): string {
+  $rules = [
+    ['wallet', '/\b(wallet|purse|cardholder|card[\s-]?case|coin[\s-]?case)\b/i'],
+    ['jewelry', '/\b(ring|necklace|bracelet|earring|pendant|brooch|bangle)\b/i'],
+    ['watch', '/\b(watch|quartz|chronograph|automatic|chrono|divers?)\b/i'],
+    ['bag', '/\b(bag|tote|clutch|handbag|backpack|pouch|shoulder|boston)\b/i'],
+  ];
+  $brands = [
+    ['watch', '/(seiko|rolex|omega|casio|citizen|tudor|breitling|tag[\s-]?heuer|iwc|patek|audemars|longines|hamilton|panerai|zenith|jaeger|hublot|breguet|chopard)/i'],
+    ['bag', '/(louis[\s-]?vuitton|fendi|herm[eè]s|chanel|gucci|prada|celine|dior|balenciaga|saint[\s-]?laurent|loewe|bottega|goyard|valentino|miu[\s-]?miu|coach)/iu'],
+    ['jewelry', '/(tiffany|bulgari|bvlgari|van[\s-]?cleef|mikimoto|harry[\s-]?winston)/i'],
+  ];
+  foreach ($rules as [$c, $re]) if (preg_match($re, $q)) return $c;
+  foreach ($brands as [$c, $re]) if (preg_match($re, $q)) return $c;
+  return '';
+}

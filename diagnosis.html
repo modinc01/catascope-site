@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,follow">
+<link rel="canonical" href="https://catascope.luxroute.net/diagnosis.html">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="index,follow">
+<title>Catawiki 相場 無料診断：あなたの商品 5 点、いくらで落ちているか | CataScope</title>
+<meta name="description" content="Catawiki（カタウィキ）相場の無料診断。商品名か型番を 5 つまで送ると、直近の落札相場（落札額・リザーブ到達率・手取り換算）を 2 営業日以内に PDF でメールします。無料・営業電話なし。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CataScope">
+<meta property="og:title" content="Catawiki 相場 無料診断 | CataScope">
+<meta property="og:description" content="あなたの商品 5 点が Catawiki でいくらで落ちているか、直近の落札相場を 2 営業日以内に PDF でお返しします。無料です。">
+<meta property="og:url" content="https://catascope.luxroute.net/diagnosis.html">
+<meta property="og:image" content="https://modinc01.github.io/catascope-site/og.png">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="https://modinc01.github.io/catascope-site/icon48.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#FFFFFF;--bg2:#F5F5F6;--card:#FFFFFF;--line:#D2D9E1;--ink:#111111;--muted:#565B60;
+  --green:#0033FF;--green-ink:#FFFFFF;--green-deep:#0026BF;--gold:#0033FF;--gold-soft:#E8EDFF;
+  --pos:#0B7A3B;--pos-soft:#E1F5E8;--neg:#C1272D;--neg-soft:#FBE3E4;--neu-soft:#F0F1F5;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 18px 40px rgba(0,51,255,.08);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0F1220;--bg2:#171B2B;--card:#1B2033;--line:#2B3147;--ink:#ECEEF5;--muted:#A3A9BA;
+  --green:#6B86FF;--green-ink:#0A0F2A;--green-deep:#0B1650;--gold:#6B86FF;--gold-soft:#1E2A5E;
+  --pos:#5CCB8C;--pos-soft:#173425;--neg:#F08A8A;--neg-soft:#3F2224;--neu-soft:#262B3D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px rgba(0,0,0,.35);
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;font-size:15px;line-height:1.9;-webkit-font-smoothing:antialiased;font-feature-settings:"palt"}
+h1,h2,h3{font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;line-height:1.35;text-wrap:balance;margin:0}
+.sans,.eyebrow,.btn,.hd nav,footer,label,.field small,.notice,.points li b,input,select,textarea{font-family:"Noto Sans JP",-apple-system,"Hiragino Sans",sans-serif}
+a{color:var(--green)}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:6px;background:var(--green);color:var(--green-ink);font-weight:700;text-decoration:none;border:0;cursor:pointer;font-size:15px;white-space:nowrap}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.btn[disabled]{opacity:.55;cursor:default;filter:none}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.logo{display:inline-flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;font-weight:800;font-size:18px;letter-spacing:.02em}
+.logo svg{width:24px;height:24px;color:var(--green)}
+/* header */
+.hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+.hd nav{display:flex;gap:22px;font-size:13px}
+.hd nav a{color:var(--muted);text-decoration:none}
+.hd nav a:hover{color:var(--ink)}
+@media(max-width:760px){.hd nav{display:none}}
+/* page */
+.hero{padding-block:56px 32px}
+.hero h1{font-size:clamp(28px,4vw,44px);font-weight:600;letter-spacing:.01em}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero p.lead{font-size:16px;margin:20px 0 0;max-width:40em}
+.grid{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:start;padding-block:16px 72px}
+@media(max-width:860px){.grid{grid-template-columns:1fr;gap:28px}}
+.points{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.points li{padding:16px 18px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);font-size:14px;color:var(--muted)}
+.points li b{display:block;color:var(--ink);font-size:14px;margin-bottom:4px}
+.aside-note{font-size:13px;color:var(--muted);margin-top:18px}
+form{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px;box-shadow:var(--shadow)}
+@media(max-width:560px){form{padding:20px 16px}}
+.field{display:block;margin-bottom:18px}
+.field label,label.req{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.field label .r{color:var(--neg);font-weight:700;margin-left:4px;font-size:12px}
+.field small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+input[type=text],input[type=email],select,textarea{width:100%;font-size:15px;padding:11px 12px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:3px solid var(--gold-soft);border-color:var(--green)}
+textarea{min-height:96px;resize:vertical}
+.items{display:grid;gap:10px}
+.items .row{display:grid;grid-template-columns:2.2em 1fr;align-items:center;gap:8px}
+.items .row span{font-size:13px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin:22px 0 20px}
+.consent input{margin-top:5px;width:16px;height:16px;accent-color:var(--green)}
+.notice{display:none;margin-top:16px;padding:14px 16px;border-radius:8px;font-size:14px;line-height:1.7}
+.notice.ok{display:block;background:var(--pos-soft);color:var(--pos);border:1px solid color-mix(in srgb,var(--pos) 35%,transparent)}
+.notice.ng{display:block;background:var(--neg-soft);color:var(--neg);border:1px solid color-mix(in srgb,var(--neg) 35%,transparent)}
+.submit-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.submit-row small{color:var(--muted);font-size:12px}
+footer{padding-block:28px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer nav{display:flex;gap:16px;flex-wrap:wrap}
+footer a{color:var(--muted);text-decoration:none}
+</style>
+</head>
+<body>
+<header class="hd"><div class="wrap">
+  <a class="logo" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>CataScope</a>
+  <nav><a href="/#how">使い方</a><a href="/#card">結果画面</a><a href="/#pricing">料金</a><a href="/#faq">よくある質問</a></nav>
+  <a class="btn ghost" href="/" style="padding:10px 18px;font-size:13px">トップへ戻る</a>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <div class="eyebrow">Catawiki 相場 無料診断</div>
+  <h1 style="margin-top:14px">無料診断：あなたの商品 5 点、<br><em>Catawiki でいくらで落ちているか。</em></h1>
+  <p class="lead">商品名か型番を 5 つまでお送りください。直近の Catawiki 落札相場（落札額・リザーブ到達率・手取り換算）を、2 営業日以内にメールで PDF にしてお返しします。費用はかかりません。営業のお電話もいたしません。</p>
+</div></section>
+
+<section><div class="wrap grid">
+  <div>
+    <ul class="points">
+      <li><b>落札額</b>直近の落札履歴を、コンディション別に並べてお見せします。</li>
+      <li><b>リザーブ到達率</b>出品されたうち、リザーブ価格（最低落札価格）に届いた割合です。</li>
+      <li><b>手取り換算</b>Catawiki の手数料を引き、円に換算した「実際に手元に残る金額」です。</li>
+    </ul>
+    <p class="aside-note">診断結果は、CataScope（Chrome 拡張）で表示される内容と同じデータをもとに作成します。中古品は状態・付属品・時期で価格が変わるため、落札価格や売れ行きを保証するものではありません。ご記入いただいた情報は診断の返送とご案内のためだけに使用します。</p>
+  </div>
+
+  <form id="dx" novalidate>
+    <div class="field"><label for="name">お名前<span class="r">必須</span></label><input type="text" id="name" name="name" maxlength="60" required autocomplete="name"></div>
+    <div class="field"><label for="email">メールアドレス<span class="r">必須</span></label><input type="email" id="email" name="email" maxlength="254" required autocomplete="email" placeholder="例: taro@example.com"><small>診断結果の PDF をこちらにお送りします。</small></div>
+    <div class="field"><label for="source">主な仕入れ先</label>
+      <select id="source" name="source"><option value="">選択してください</option><option value="エコオク">エコオク（エコリング）</option><option value="ヤフオク">ヤフオク</option><option value="メルカリ">メルカリ</option><option value="その他">その他</option></select></div>
+    <div class="field"><label for="item1">診断する商品（商品名か型番）<span class="r">1 点以上</span></label>
+      <div class="items">
+        <div class="row"><span>1.</span><input type="text" id="item1" name="item1" maxlength="120" required placeholder="例: ルイヴィトン スピーディ30 M41526"></div>
+        <div class="row"><span>2.</span><input type="text" id="item2" name="item2" maxlength="120" placeholder="例: ロレックス サブマリーナ 16610"></div>
+        <div class="row"><span>3.</span><input type="text" id="item3" name="item3" maxlength="120" placeholder="例: エルメス ピコタンロック PM"></div>
+        <div class="row"><span>4.</span><input type="text" id="item4" name="item4" maxlength="120" placeholder="例: シャネル マトラッセ 25"></div>
+        <div class="row"><span>5.</span><input type="text" id="item5" name="item5" maxlength="120" placeholder="例: セイコー グランドセイコー SBGA211"></div>
+      </div>
+      <small>5 つまで。わかる範囲で型番やサイズを添えていただくと精度が上がります。</small></div>
+    <div class="field"><label for="memo">任意のメモ</label><textarea id="memo" name="memo" maxlength="1000" placeholder="仕入れ値の目安、気になっている点など、あれば自由にお書きください。"></textarea></div>
+    <label class="consent"><input type="checkbox" id="consent" name="consent" required><span><a href="/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意し、診断結果とご案内をメールで受け取ることに同意します。<span class="r" style="color:var(--neg);margin-left:4px;font-size:12px">必須</span></span></label>
+    <div class="submit-row"><button type="submit" class="btn" id="submit">無料で診断を受ける</button><small>2 営業日以内に PDF をメールでお送りします</small></div>
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+  </form>
+</div></section>
+
+<footer><div class="wrap">
+  <div>© 2026 株式会社ストックス · Catawiki B.V. とは無関係のサードパーティツールです</div>
+  <nav><a href="/">トップ</a><a href="/tokushoho.html">特定商取引法に基づく表記</a><a href="/privacy.html">プライバシーポリシー</a><a href="/terms.html">利用規約</a><a href="mailto:stox.japan@gmail.com">お問い合わせ</a></nav>
+</div></footer>
+
+<script>
+(function(){
+  var form=document.getElementById('dx'),btn=document.getElementById('submit'),notice=document.getElementById('notice');
+  function show(kind,html){notice.className='notice '+kind;notice.innerHTML=html;notice.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=form.name.value.trim(),email=form.email.value.trim(),items=[];
+    for(var i=1;i<=5;i++){var v=form['item'+i].value.trim();if(v)items.push(v);}
+    if(!name){show('ng','お名前を入力してください。');form.name.focus();return;}
+    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){show('ng','メールアドレスを正しく入力してください。');form.email.focus();return;}
+    if(!items.length){show('ng','診断する商品を 1 つ以上入力してください。');form.item1.focus();return;}
+    if(!form.consent.checked){show('ng','プライバシーポリシーへの同意にチェックを入れてください。');form.consent.focus();return;}
+    var payload={name:name,email:email,source:form.source.value,items:items,memo:form.memo.value.trim(),consent:true};
+    btn.disabled=true;btn.textContent='送信しています…';notice.className='notice';
+    fetch('/api/diagnosis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+      .then(function(r){return r.json().then(function(j){return{status:r.status,json:j};});})
+      .then(function(r){
+        if(r.json&&r.json.ok){
+          var from=r.json.from?'<b>'+esc(r.json.from)+'</b> から':'メールで';
+          show('ok','受け付けました。2 営業日以内に '+from+' PDF でお送りします。'+(r.json.mailed===false?'<br>受付確認メールの送信に失敗しましたが、申込は記録されています。届かない場合は stox.japan@gmail.com までご連絡ください。':'<br>受付確認のメールもお送りしましたので、ご確認ください。'));
+          form.reset();btn.textContent='送信しました';return;
+        }
+        var err=r.json&&r.json.error;
+        if(err==='too_soon')show('ng','同じメールアドレスからの申込を直前に受け付けています。10 分ほどおいてから再度お試しください。');
+        else if(err==='invalid')show('ng','入力内容に不備があります。お名前・メールアドレス・商品（120 文字以内）をご確認ください。');
+        else show('ng','送信に失敗しました。時間をおいて再度お試しいただくか、stox.japan@gmail.com までご連絡ください。');
+        btn.disabled=false;btn.textContent='無料で診断を受ける';
+      })
+      .catch(function(){show('ng','通信に失敗しました。ネットワークをご確認のうえ、再度お試しください。');btn.disabled=false;btn.textContent='無料で診断を受ける';});
+  });
+})();
+</script>
+</body>
+</html>
