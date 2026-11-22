@@ -1,0 +1,43 @@
+<div class="lux-svc">
+<style>.lux-svc{--bg2:#F7FAFD;--ink:#16202E;--sub:#5A6675;--mut:#8A96A5;--line:#E4EAF2;--acc:#1D63B5;--warnT:#FAF0E0;--warn:#A2661C;font-family:"Noto Sans JP",-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;color:var(--ink);line-height:1.9;max-width:880px;margin:0 auto;padding:8px 0 56px} .lux-svc *{box-sizing:border-box} .lux-svc h2{font-size:1.45rem;font-weight:700;margin:0 0 12px;border:0;padding:0;background:none} .lux-svc p{margin:0} .lux-svc br{display:none} .lux-svc .lead{color:var(--sub);font-size:.92rem;margin:0 0 34px} .lux-svc .lbl{font-size:.68rem;font-weight:700;letter-spacing:.2em;color:var(--acc);display:block;margin:44px 0 12px} .lux-svc .box{border:1px solid var(--line);border-radius:6px;background:#fff;overflow:hidden;margin-bottom:14px} .lux-svc .row{display:flex;flex-wrap:wrap;gap:12px 26px;align-items:center;padding:22px 24px;border-bottom:1px solid var(--line)} .lux-svc .row:last-child{border-bottom:0} .lux-svc .amt{flex:0 0 auto;font-size:1.5rem;font-weight:300;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--acc);min-width:5.5em} .lux-svc .amt small{font-size:.78rem;font-weight:700} .lux-svc .desc{flex:1 1 220px;min-width:0} .lux-svc .desc b{display:block;font-size:1.02rem;font-weight:700;line-height:1.7} .lux-svc .desc em{font-style:normal;display:block;font-size:.84rem;color:var(--sub);line-height:1.85} .lux-svc .btn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border-radius:6px;font-weight:700;font-size:.85rem;text-decoration:none;border:1px solid transparent;white-space:nowrap;background:var(--acc);color:#fff} .lux-svc .note{font-size:.82rem;color:var(--sub);background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:16px 20px;line-height:1.9} .lux-svc .note a{color:var(--acc);font-weight:700;text-decoration:none} .lux-svc .warn{background:var(--warnT);border-color:#EBD9B8;color:var(--warn)} .lux-svc .was{color:var(--mut);text-decoration:line-through} .page-id-31 .entry-title,.page-id-31 #sidebar,.page-id-31 .sns-share,.page-id-31 .sns-follow,.page-id-31 .date-tags,.page-id-31 .article-footer,.page-id-31 .under-entry-content,.page-id-31 .toc,.page-id-31 .entry-categories-tags{display:none!important} .page-id-31 #main{width:100%!important;max-width:100%!important} .page-id-31 #content-in{max-width:940px!important;display:block!important} @media(max-width:640px){.lux-svc .amt{min-width:0}}</style>
+<h2>卸パック・外注メニュー</h2>
+<p class="lead">どちらもサロン月額とは別会計のオプションです。使いたい月だけ利用できます。お申し込みは公式LINE、お支払いは銀行振込です。</p>
+<p><span class="lbl" id="wholesale">卸パック ─ 入金確認後1週間以内に納品</span></p>
+<div class="box">
+<div class="row">
+<div class="amt">10<small>万円</small></div>
+<div class="desc"><b>まず数を売る段階に</b><em>回転の速い価格帯を中心に選定します。出品と発送の流れを、まず自分の手で作りたい方向け。</em></div>
+<p><a class="btn" href="https://luxroute.net/wholesale/">申込フォームへ（請求書が自動発行）</a></div>
+<div class="row">
+<div class="amt">30<small>万円</small></div>
+<div class="desc"><b>1点の利益も取りにいく</b><em>単価の高い構成を混ぜて選定します。撮影と説明文の質が、そのまま売値に返ってきます。</em></div>
+<p><a class="btn" href="https://luxroute.net/wholesale/">申込フォームへ（請求書が自動発行）</a></div>
+<div class="row">
+<div class="amt">50<small>万円</small></div>
+<div class="desc"><b>在庫をまとめて確保する</b><em>月利30万以上を狙う在庫量。まとまった量を一度に確保したい方向け。スタンダード会員には優先枠があります。</em></div>
+<p><a class="btn" href="https://luxroute.net/wholesale/">申込フォームへ（請求書が自動発行）</a></div>
+<div class="row">
+<div class="amt">+4,950<small>円〜</small></div>
+<div class="desc"><b>撮影オプション（卸パック商品・コース別定額）</b><em>10万円コース +4,950円／30万円コース +14,850円／50万円コース +24,750円（税込）。発送前に全点を撮影・採寸・画像加工をして、撮影データと一緒にお渡しします。申込フォームでチェックすると請求書に合算されます。</em></div>
+</div>
+</div>
+<p class="note">お申し込みは<a href="https://luxroute.net/wholesale/">申込フォーム</a>から。コースを選んで送信すると請求書が自動発行されます。お支払いは<b>銀行振込</b>です（カード決済はありません）。入金確認をもって受付完了となり、7日以内に納品書付きで発送します。内容はその時々の相場と仕入れ状況によって変わるため、品目や点数を事前に確定してのお約束はしていません。金額に見合う在庫をこちらで選定して納品します。</p>
+<p><span class="lbl" id="photo">外注メニュー ─ 撮影・保管・発送（税込・1点あたり）</span></p>
+<div class="box">
+<div class="row"><div class="amt">660<small>円</small></div><div class="desc"><b>撮影パック（基本）</b><em>撮影・採寸・画像加工・撮影データ納品（LINEアルバム）。出品・発送は自分で。</em></div></div>
+<div class="row"><div class="amt">1,100<small>円</small></div><div class="desc"><b>撮影＋保管・発送</b><em>撮影パックの内容＋保管・梱包・購入者への発送。出品だけ自分で。</em></div></div>
+</div>
+<p class="note">サロンの提携先の料金そのままで取り次ぎます。サロンの上乗せはありません。<b>入会金など利用開始の条件は先方と調整のうえ決まるため、ご利用はサロン入会後に質問チャンネル（チャット）でご相談ください。</b>最低ロットなし。納期は商品到着から1週間以内が目安。保管は納品から1ヶ月無料、以降 1点 110円／月（月末締め）。商品を提携先へ送る送料はお客様のご負担です。購入者への送料は提携料金（60サイズ 429円／80サイズ 506円／100サイズ 627円／120サイズ 847円／140サイズ 1,045円、九州発の目安）。</p>
+<p><span class="lbl">サロン会員特典 ─ 仕入れ同行</span></p>
+<div class="box">
+<div class="row">
+<div class="amt">4,980<small>円</small></div>
+<div class="desc"><b>ZOOM 1対1 ／ 1時間</b><em><span class="was">通常 29,800円／時</span>　オンラインオークションの画面を共有しながら、状態判断・相場判断・入札上限の決め方をマンツーマンで指導します。</em></div>
+<p><a class="btn" href="https://univa.cc/PKysFk">チケットを購入</a></div>
+</div>
+<p class="note warn">仕入れ同行チケットはベーシック以上の会員限定です。ご購入前にプランへのご加入をお願いします。</p>
+<p class="note" style="margin-top:34px">お支払い条件・解約条件については <a href="/tokushoho/">特定商取引法に基づく表記</a> をご確認ください。</p>
+</div>
+<p><!-- 決済リンクは各ボタンの href に直接記載（UnivaPay リンクフォーム）。変更時は href を書き換えること。
+     卸パック(10/30/50万)・外注メニューは銀行振込・公式LINE受付。旧 UnivaPay リンク 卸5万 eDw3Zv／10万 D4qduZ／30万 S_hbA6／撮影 NQpuq5 は未使用
+     仕入れ同行 https://univa.cc/PKysFk --></p>
