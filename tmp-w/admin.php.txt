@@ -1,0 +1,146 @@
+<?php
+require __DIR__ . '/lib.php';
+session_start();
+$pw = (string)cfg('ADMIN_PASSWORD');
+if ($pw === '') exit('config.php の ADMIN_PASSWORD を設定してください。');
+if (isset($_GET['logout'])) { session_destroy(); header('Location: admin.php'); exit; }
+if (!empty($_POST['pw'])) { if (hash_equals($pw, (string)$_POST['pw'])) { session_regenerate_id(true); $_SESSION['adm'] = 1; } else sleep(2); header('Location: admin.php'); exit; }
+if (empty($_SESSION['adm'])) { ?><!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>卸パック管理</title></head><body style="font-family:sans-serif;padding:40px"><form method="post"><h2>卸パック管理</h2><input type="password" name="pw" placeholder="パスワード" autofocus style="padding:10px;font-size:1rem"> <button style="padding:10px 16px">ログイン</button></form></body></html><?php exit; }
+if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(16));
+$msg = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['act'])) {
+  if (!hash_equals($_SESSION['csrf'], (string)($_POST['csrf'] ?? ''))) exit('csrf');
+  $id = (string)($_POST['id'] ?? '');
+  switch ($_POST['act']) {
+    case 'paid': $o = mark_paid($id); $msg = $o ? "入金確認にしました（{$o['id']}）。お客様へ通知メールを送りました。" : 'not found'; break;
+    case 'delivery':
+      $items = null;
+      if (!empty($_POST['lines'])) {
+        $items = [];
+        foreach (preg_split('/\r?\n/', trim((string)$_POST['lines'])) as $ln) {
+          $p = array_map('trim', explode(',', $ln)); if (count($p) < 3 || $p[0] === '') continue;
+          $items[] = ['name' => $p[0], 'qty' => (int)$p[1], 'unit' => (int)preg_replace('/\D/', '', $p[2])];
+        }
+        if (!$items) $items = null;
+      }
+      $o = make_delivery($id, $items, (int)($_POST['photo_count'] ?? 0));
+      $msg = $o ? "納品書 {$o['delivery_no']} を作成しました。" : 'not found'; break;
+    case 'shipped': $o = mark_shipped($id, trim((string)($_POST['tracking'] ?? ''))); $msg = $o ? "発送済みにしました。納品書と追跡番号をメールしました。" : 'not found'; break;
+    case 'cancel': update_order($id, function (&$o) { $o['status'] = 'cancelled'; $o['log'][] = [date('Y-m-d H:i:s'), 'キャンセル']; }); $msg = 'キャンセルにしました。'; break;
+    case 'resend': $o = find_order($id); if ($o) { send_invoice_mail($o); $msg = '請求書メールを再送しました。'; } break;
+    case 'sendmail':
+      $o = find_order($id); $to = trim((string)($_POST['to'] ?? '')); $cc = trim((string)($_POST['cc'] ?? ''));
+      if (!$o) { $msg = 'not found'; break; }
+      if (!filter_var($to, FILTER_VALIDATE_EMAIL) || ($cc !== '' && !filter_var($cc, FILTER_VALIDATE_EMAIL))) { $msg = 'メールアドレスが正しくありません。'; break; }
+      $ok = send_invoice_mail($o, $to, trim((string)($_POST['subject'] ?? '')), (string)($_POST['body'] ?? ''), $cc);
+      $msg = $ok ? "請求書メールを {$to} に送信しました。" : "送信に失敗しました（サーバーのメール設定を確認してください）。"; break;
+    case 'create':
+      $in = []; foreach (['course','name','company','email','tel','zip','address','note'] as $k) $in[$k] = trim((string)($_POST[$k] ?? ''));
+      $in['photo'] = !empty($_POST['photo']);
+      if (!isset(cfg('COURSES')[$in['course']]) || $in['name'] === '' || !filter_var($in['email'], FILTER_VALIDATE_EMAIL)) { $_SESSION['msg'] = 'コース・お名前・メールアドレスは必須です。'; header('Location: admin.php?new=1'); exit; }
+      $o = create_order($in);
+      $_SESSION['msg'] = "請求書 {$o['invoice_no']} を発行しました。内容を確認してメールを送ってください。"; header('Location: admin.php?mail=' . urlencode($o['id'])); exit;
+  }
+  $_SESSION['msg'] = $msg; header('Location: admin.php' . (isset($_POST['back']) ? '?id=' . urlencode($id) : '')); exit;
+}
+$msg = $_SESSION['msg'] ?? ''; unset($_SESSION['msg']);
+$orders = all_orders(); $sel = isset($_GET['id']) ? find_order((string)$_GET['id']) : null; $mailo = isset($_GET['mail']) ? find_order((string)$_GET['mail']) : null; $newf = isset($_GET['new']); $csrf = $_SESSION['csrf'];
+function btn(string $act, string $id, string $label, string $cls = '', string $extra = '', bool $confirm = false): string {
+  global $csrf; $oc = $confirm ? ' onsubmit="return confirm(\'' . h($label) . ' を実行しますか？\')"' : '';
+  return '<form method="post" style="display:inline"' . $oc . '><input type="hidden" name="csrf" value="' . h($csrf) . '"><input type="hidden" name="act" value="' . h($act) . '"><input type="hidden" name="id" value="' . h($id) . '"><input type="hidden" name="back" value="1">' . $extra . '<button class="b ' . $cls . '">' . h($label) . '</button></form>';
+}
+?><!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>卸パック管理</title>
+<style>
+body{font-family:-apple-system,"Hiragino Sans",sans-serif;margin:0;background:#f5f4f1;color:#1c1a17;font-size:14px}
+.top{background:#1c1a17;color:#fff;padding:10px 18px;display:flex;justify-content:space-between}.top a{color:#ccc}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}.msg{background:#e8f5e9;border:1px solid #a5d6a7;padding:10px 14px;border-radius:8px;margin-bottom:14px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}th,td{padding:9px 10px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}th{background:#faf8f4;font-size:12px}
+.st{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;background:#eee}.st.invoiced{background:#fff3cd}.st.paid{background:#d1ecf1}.st.shipped{background:#d4edda}.st.cancelled{background:#f8d7da}
+.b{padding:7px 12px;border:1px solid #bbb;background:#fff;border-radius:6px;cursor:pointer;margin:2px 4px 2px 0;font-size:13px}.b.p{background:#1c1a17;color:#fff;border-color:#1c1a17}.b.g{background:#b8862b;color:#fff;border-color:#b8862b}.b.d{color:#a33}
+.card{background:#fff;border:1px solid #e6e1d8;border-radius:10px;padding:18px;margin-bottom:16px}.card h2{margin:0 0 10px;font-size:16px}
+dl{display:grid;grid-template-columns:120px 1fr;gap:4px 10px;margin:0}dt{color:#777}textarea,input[type=text],input[type=number]{padding:7px;border:1px solid #ccc;border-radius:6px;font-family:inherit;font-size:13px}
+.log{font-size:12px;color:#666}
+</style></head><body>
+<div class="top"><b>卸パック管理</b><span><a href="admin.php?new=1" style="color:#f3d28a;font-weight:700">＋ 請求書を作成して送る</a> ／ <a href="index.php" target="_blank">申込フォーム</a> ／ <a href="admin.php?logout=1">ログアウト</a></span></div>
+<div class="wrap">
+<?php if ($msg): ?><div class="msg"><?= h($msg) ?></div><?php endif; ?>
+<?php if ($newf): ?>
+<p><a href="admin.php">← 一覧に戻る</a></p>
+<div class="card"><h2>請求書を作成して送る（LINE などで申し込みを受けたとき）</h2>
+<p>お客様情報とコースを入れると、申込フォームと同じ形式で請求書が発行されます。次の画面でメール文面を確認してから送信します。</p>
+<form method="post" class="grid"><input type="hidden" name="csrf" value="<?= h($csrf) ?>"><input type="hidden" name="act" value="create">
+<dl style="grid-template-columns:140px 1fr;row-gap:10px">
+<dt>コース *</dt><dd><?php foreach (cfg('COURSES') as $k => $c): ?><label style="margin-right:14px"><input type="radio" name="course" value="<?= h($k) ?>" <?= $k==='30'?'checked':'' ?>> <?= h(mb_substr($c['label'],5)) ?>（<?= yen($c['price']) ?>）</label><?php endforeach; ?><br><label><input type="checkbox" name="photo" value="1"> 撮影オプションあり</label></dd>
+<dt>お名前 *</dt><dd><input type="text" name="name" style="width:320px" required></dd>
+<dt>会社名・屋号</dt><dd><input type="text" name="company" style="width:320px"></dd>
+<dt>メール *</dt><dd><input type="text" name="email" style="width:320px" required></dd>
+<dt>電話</dt><dd><input type="text" name="tel" style="width:220px"></dd>
+<dt>郵便番号</dt><dd><input type="text" name="zip" style="width:140px"></dd>
+<dt>送付先住所</dt><dd><input type="text" name="address" style="width:100%"></dd>
+<dt>備考</dt><dd><textarea name="note" rows="2" style="width:100%"></textarea></dd>
+</dl>
+<button class="b g" style="margin-top:12px">請求書を発行してメール文面へ</button></form></div>
+
+<?php elseif ($mailo): $o = $mailo; $c = course_of($o); [$ms, $mb] = invoice_mail_template($o); ?>
+<p><a href="admin.php?id=<?= h($o['id']) ?>">← <?= h($o['id']) ?> の詳細に戻る</a></p>
+<div class="card"><h2>請求書をメールで送る — <?= h($o['invoice_no']) ?>（<?= h($c['label']) ?> <?= yen($o['amount']) ?>）</h2>
+<p>本文はそのまま送れる状態です。必要なところだけ直して「送信」を押してください。請求書リンク: <a href="<?= h(doc_url($o,'invoice')) ?>" target="_blank">開いて確認</a></p>
+<form method="post"><input type="hidden" name="csrf" value="<?= h($csrf) ?>"><input type="hidden" name="act" value="sendmail"><input type="hidden" name="id" value="<?= h($o['id']) ?>"><input type="hidden" name="back" value="1">
+<dl style="grid-template-columns:90px 1fr;row-gap:10px">
+<dt>宛先</dt><dd><input type="text" name="to" value="<?= h($o['email']) ?>" style="width:360px" required></dd>
+<dt>CC</dt><dd><input type="text" name="cc" value="" placeholder="任意（自分宛の控えなど）" style="width:360px"></dd>
+<dt>件名</dt><dd><input type="text" name="subject" value="<?= h($ms) ?>" style="width:100%"></dd>
+<dt>本文</dt><dd><textarea name="body" rows="22" style="width:100%;line-height:1.6"><?= h($mb) ?></textarea></dd>
+</dl>
+<button class="b p" style="margin-top:12px;padding:10px 22px" onclick="return confirm('この内容で送信しますか？')">送信</button>
+<a class="b" style="text-decoration:none;display:inline-block" href="admin.php?id=<?= h($o['id']) ?>">送らずに戻る</a></form>
+<p class="log" style="margin-top:14px">送信履歴:<br><?php foreach ($o['log'] as $l) if (str_contains($l[1], 'メール')) echo h($l[0]) . ' ' . h($l[1]) . '<br>'; ?></p></div>
+
+<?php elseif ($sel): $o = $sel; $c = course_of($o); ?>
+<p><a href="admin.php">← 一覧に戻る</a></p>
+<div class="card"><h2><?= h($o['id']) ?> <span class="st <?= h($o['status']) ?>"><?= h(status_label($o['status'])) ?></span></h2>
+<dl><dt>受注日時</dt><dd><?= h($o['created_at']) ?></dd><dt>コース</dt><dd><?= h($c['label']) ?> <?= yen($o['amount']) ?><?= $o['photo'] ? '（撮影オプションあり）' : '' ?></dd>
+<dt>お客様</dt><dd><?= h($o['name']) ?><?= $o['company'] ? '（' . h($o['company']) . '）' : '' ?>／<?= h($o['email']) ?>／<?= h($o['tel']) ?></dd>
+<dt>送付先</dt><dd>〒<?= h($o['zip']) ?> <?= h($o['address']) ?></dd><dt>備考</dt><dd><?= nl2br(h($o['note'])) ?></dd>
+<dt>請求書</dt><dd><a href="<?= h(doc_url($o,'invoice')) ?>" target="_blank"><?= h($o['invoice_no']) ?></a>（期限 <?= jdate($o['due_date']) ?>）　<a href="admin.php?mail=<?= h($o['id']) ?>">メールで送る</a></dd>
+<?php if ($o['paid_at']): ?><dt>入金確認</dt><dd><?= h($o['paid_at']) ?>（発送期限 <?= jdate($o['ship_deadline']) ?>）</dd><?php endif; ?>
+<?php if ($o['delivery_no']): ?><dt>納品書</dt><dd><a href="<?= h(doc_url($o,'delivery')) ?>" target="_blank"><?= h($o['delivery_no']) ?></a> <?= yen((int)$o['delivery_total']) ?></dd><?php endif; ?>
+<?php if ($o['shipped_at']): ?><dt>発送</dt><dd><?= h($o['shipped_at']) ?> 追跡 <?= h($o['tracking']) ?></dd><?php endif; ?></dl>
+<p class="log"><?php foreach ($o['log'] as $l) echo h($l[0]) . ' ' . h($l[1]) . '<br>'; ?></p></div>
+
+<?php if ($o['status'] === 'invoiced'): ?>
+<div class="card"><h2>① 入金確認</h2><p>通帳で入金を確認したら押してください。お客様に「入金確認・<?= (int)cfg('SHIP_DAYS') ?>日以内に発送」のメールが自動で届きます。</p>
+<?= btn('paid', $o['id'], '入金を確認した', 'p', '', true) ?> <a class="b" style="text-decoration:none;display:inline-block" href="admin.php?mail=<?= h($o['id']) ?>">請求書をメールで送る（文面を編集）</a> <?= btn('cancel', $o['id'], 'キャンセル', 'd', '', true) ?></div>
+<?php endif; ?>
+<?php if (in_array($o['status'], ['paid','shipped'])): ?>
+<div class="card"><h2>② 納品書</h2>
+<p>ボタン1つで「<?= h($c['label']) ?> 一式 <?= yen($o['amount']) ?>」の納品書ができます。<?= $o['photo'] ? '撮影オプションの点数を入れると 1点 ' . yen((int)cfg('PHOTO_UNIT')) . ' で行が追加されます。' : '' ?></p>
+<?= btn('delivery', $o['id'], $o['delivery_no'] ? '納品書を作り直す' : '納品書を作成', 'g', $o['photo'] ? '撮影点数 <input type="number" name="photo_count" min="0" value="0" style="width:70px"> ' : '') ?>
+<details style="margin-top:10px"><summary style="cursor:pointer;color:#777">明細を自分で書く（1行 = 品名, 数量, 単価）</summary>
+<form method="post" style="margin-top:8px"><input type="hidden" name="csrf" value="<?= h($csrf) ?>"><input type="hidden" name="act" value="delivery"><input type="hidden" name="id" value="<?= h($o['id']) ?>"><input type="hidden" name="back" value="1">
+<textarea name="lines" rows="5" style="width:100%"><?= h(implode("\n", array_map(fn($it) => "{$it['name']}, {$it['qty']}, {$it['unit']}", $o['delivery_items'] ?: [['name'=>$c['label'].' 一式','qty'=>1,'unit'=>$o['amount']]]))) ?></textarea>
+<button class="b" style="margin-top:6px">この明細で納品書を作成</button></form></details>
+<?php if ($o['delivery_no']): ?><p style="margin-top:10px"><a href="<?= h(doc_url($o,'delivery')) ?>" target="_blank" class="b" style="text-decoration:none;display:inline-block">納品書を開く（印刷・PDF）</a></p><?php endif; ?>
+</div>
+<?php endif; ?>
+<?php if ($o['status'] === 'paid'): ?>
+<div class="card"><h2>③ 発送</h2><p>追跡番号を入れて押すと、納品書リンクと追跡番号をお客様にメールします。<?= $o['delivery_no'] ? '' : '<b>先に納品書を作成してください。</b>' ?></p>
+<?= $o['delivery_no'] ? btn('shipped', $o['id'], '発送済みにしてメール送信', 'p', '追跡番号 <input type="text" name="tracking" style="width:220px" required> ', true) : '' ?></div>
+<?php endif; ?>
+
+<?php else: ?>
+<table><thead><tr><th>受注</th><th>状態</th><th>コース</th><th>お客様</th><th>金額</th><th>請求書</th><th>入金</th><th>納品書</th><th></th></tr></thead><tbody>
+<?php if (!$orders): ?><tr><td colspan="9" style="color:#888">まだ申し込みはありません。</td></tr><?php endif; ?>
+<?php foreach ($orders as $o): $c = course_of($o); ?>
+<tr><td><a href="admin.php?id=<?= h($o['id']) ?>"><?= h($o['id']) ?></a><br><small><?= h(substr($o['created_at'],0,16)) ?></small></td>
+<td><span class="st <?= h($o['status']) ?>"><?= h(status_label($o['status'])) ?></span></td>
+<td><?= h(mb_substr($c['label'],5)) ?><?= $o['photo'] ? '<br><small>撮影あり</small>' : '' ?></td>
+<td><?= h($o['name']) ?><br><small><?= h($o['email']) ?></small></td><td><?= yen($o['amount']) ?></td>
+<td><a href="<?= h(doc_url($o,'invoice')) ?>" target="_blank"><?= h($o['invoice_no']) ?></a><br><small>期限 <?= h($o['due_date']) ?></small></td>
+<td><?= $o['paid_at'] ? h(substr($o['paid_at'],0,10)) : '-' ?></td>
+<td><?= $o['delivery_no'] ? '<a href="' . h(doc_url($o,'delivery')) . '" target="_blank">' . h($o['delivery_no']) . '</a>' : '-' ?></td>
+<td><?php if ($o['status']==='invoiced') { echo btn('paid', $o['id'], '入金確認', 'p', '', true); echo '<a class="b" style="text-decoration:none;display:inline-block" href="admin.php?mail=' . h($o['id']) . '">請求書メール</a>'; } if ($o['status']==='paid') echo '<a class="b" style="text-decoration:none;display:inline-block" href="admin.php?id=' . h($o['id']) . '">納品書・発送</a>'; ?></td></tr>
+<?php endforeach; ?>
+</tbody></table>
+<?php endif; ?>
+</div></body></html>
