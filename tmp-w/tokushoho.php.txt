@@ -1,0 +1,32 @@
+<?php
+require __DIR__ . '/lib.php';
+$co = cfg('COMPANY'); $courses = cfg('COURSES');
+?><!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>特定商取引法に基づく表記（卸パック・外注メニュー） | <?= h($co['name']) ?></title>
+<style>
+body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;color:#1c1a17;background:#faf8f4;line-height:1.8}
+.wrap{max-width:760px;margin:0 auto;padding:32px 20px 80px}h1{font-size:1.3rem;margin:0 0 20px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e6e1d8;font-size:.93rem}th,td{padding:12px 14px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}th{width:32%;background:#faf8f4;font-weight:600}
+a{color:#b8862b}
+</style></head><body><div class="wrap">
+<h1>特定商取引法に基づく表記（卸パック・外注メニュー）</h1>
+<table>
+<tr><th>販売事業者</th><td><?= h($co['name']) ?></td></tr>
+<tr><th>運営統括責任者</th><td>岩切 大征</td></tr>
+<tr><th>所在地</th><td>〒<?= h($co['zip']) ?> <?= h($co['address']) ?></td></tr>
+<tr><th>電話番号</th><td><?= h($co['tel']) ?>（受付 平日10:00〜18:00）</td></tr>
+<tr><th>メールアドレス</th><td><?= h($co['mail']) ?></td></tr>
+<?php if ($co['reg_no']): ?><tr><th>適格請求書発行事業者登録番号</th><td><?= h($co['reg_no']) ?></td></tr><?php endif; ?>
+<tr><th>販売価格（税込）</th><td>
+<?php foreach ($courses as $c): ?><?= h($c['label']) ?> <?= yen($c['price']) ?>（撮影オプション ＋<?= yen($c['photo']) ?>）<br><?php endforeach; ?>
+外注メニュー（1点あたり）: 撮影パック 660円／撮影＋保管・発送 1,100円／保管料 1点 110円／月（納品から1ヶ月無料）</td></tr>
+<tr><th>商品代金以外の必要料金</th><td>銀行振込手数料はお客様のご負担です。外注メニューをご利用の場合、商品を提携先へ送る送料はお客様のご負担です。</td></tr>
+<tr><th>お支払い方法</th><td>銀行振込（クレジットカード決済はありません）</td></tr>
+<tr><th>お支払い時期</th><td>卸パックはお申し込み時に自動発行される請求書記載の口座へ、請求書記載の期限（発行から<?= (int)cfg('DUE_DAYS') ?>日）までにお振り込みください。入金確認をもって受付完了となります。外注メニューはお申し込み後にご案内する口座へお振り込みください。</td></tr>
+<tr><th>商品の引き渡し時期</th><td>卸パックは入金確認後<?= (int)cfg('SHIP_DAYS') ?>日以内に発送します。外注メニューは商品到着から1週間以内が目安です。</td></tr>
+<tr><th>商品の内容</th><td>卸パックは、そのときの相場と仕入れ状況を見て、コースの金額に見合う在庫を当社が選定して納品するサービスです。品目・点数を事前に確定してのお約束はしていません。</td></tr>
+<tr><th>返品・キャンセル</th><td>お客様都合によるキャンセル・返品はお受けできません。届いた商品に当社の責に帰すべき不備があった場合は、到着後7日以内にご連絡ください。交換または返金で対応します。期限までに入金がない場合、お申し込みは取り消しとなります。</td></tr>
+<tr><th>お問い合わせ</th><td><?= h(cfg('SUPPORT_CHANNEL')) ?> または <?= h($co['mail']) ?></td></tr>
+</table>
+</div></body></html>
