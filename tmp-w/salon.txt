@@ -1,0 +1,356 @@
+<div class="lux-lp">
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@200..900&display=swap");
+.lux-lp *{box-sizing:border-box}
+.lux-lp img{max-width:100%}
+.lux-lp a{color:inherit}
+.lux-lp h1,.lux-lp h2,.lux-lp h3,.lux-lp h4{margin:0;line-height:1.5;font-weight:700;text-wrap:balance;letter-spacing:-.005em;border:0;padding:0;background:none}
+.lux-lp p,.lux-lp dl,.lux-lp dt,.lux-lp dd{margin:0}
+.lux-lp ul{margin:0;padding:0;list-style:none}
+.lux-lp li{margin:0;list-style:none}
+.lux-lp{--bg:#FFFFFF; --bg-2:#F7FAFD; --bg-3:#EFF5FC; --card:#FFFFFF; --text:#16202E; --text-2:#5A6675; --text-3:#8A96A5; --line:#E4EAF2; --line-2:#CBD6E4; --accent:#1D63B5; --accent-on:#FFFFFF; --accent-tint:#EDF4FD; --accent-line:#C4DAF4; --accent-deep:#12467F; --mark:#2E6DB8; --good:#1E7A5A; --good-tint:#E6F3EE; --warn:#A2661C; --warn-tint:#FAF0E0; --shadow:0 1px 2px rgba(22,32,46,.04), 0 12px 32px -18px rgba(22,32,46,.22); --r:6px; color-scheme:light;
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Noto Sans JP", -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight:400; line-height:1.9; font-size:16px; font-feature-settings:"palt" 1; -webkit-font-smoothing:antialiased;}
+.lux-lp button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+.lux-lp .wrap{max-width:1060px; margin:0 auto; padding:0 24px}
+.lux-lp .narrow{max-width:740px; margin:0 auto; padding:0 24px}
+.lux-lp .label{font-size:.68rem; font-weight:700; letter-spacing:.2em; color:var(--mark); display:block; margin-bottom:14px}
+.lux-lp .hero{background:#FFFFFF; border-bottom:1px solid var(--line); padding:clamp(48px,6vw,76px) 0 clamp(44px,5vw,64px)}
+.lux-lp .hero h1{font-size:clamp(1.5rem,3vw,2.1rem); font-weight:700; line-height:1.62; margin-bottom:18px; max-width:20em}
+.lux-lp .hero .lede{max-width:34em; color:var(--text-2); font-size:.95rem; line-height:2.05}
+.lux-lp .cta-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; align-items:center}
+.lux-lp .btn{display:inline-flex; align-items:center; gap:10px; padding:14px 28px; border-radius:var(--r); font-weight:700; font-size:.9rem; text-decoration:none; letter-spacing:.02em; border:1px solid transparent; transition:transform .12s ease, background-color .12s ease, border-color .12s ease;}
+.lux-lp .btn:hover{transform:translateY(-1px)}
+.lux-lp .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.lux-lp .btn-primary{background:var(--accent); color:var(--accent-on)}
+.lux-lp .btn-outline{border-color:var(--line-2); color:var(--text); background:#FFFFFF}
+.lux-lp .btn-outline:hover{border-color:var(--text-2)}
+.lux-lp .btn-sm{padding:9px 18px; font-size:.8rem}
+.lux-lp .hero-meta{margin-top:24px; font-size:.77rem; color:var(--text-3); letter-spacing:.03em}
+.lux-lp .sec{padding:clamp(52px,7vw,84px) 0}
+.lux-lp .sec.alt{background:var(--bg-2)}
+.lux-lp .sec h2{font-size:clamp(1.3rem,2.5vw,1.75rem); margin-bottom:14px; line-height:1.55}
+.lux-lp .sec .sub{color:var(--text-2); max-width:38em; font-size:.92rem}
+.lux-lp .sec-head{margin-bottom:40px}
+.lux-lp .plans{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(262px,1fr)); align-items:stretch}
+.lux-lp .plan{background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); padding:30px 26px 26px; display:flex; flex-direction:column}
+.lux-lp .plan.feature{border-color:var(--accent); box-shadow:var(--shadow); position:relative}
+.lux-lp .plan.feature::before{content:"おすすめ"; position:absolute; top:-1px; right:20px; background:var(--accent); color:var(--accent-on); font-size:.62rem; font-weight:700; letter-spacing:.14em; padding:4px 11px; border-radius:0 0 2px 2px;}
+.lux-lp .plan .tier{font-size:.66rem; font-weight:700; letter-spacing:.2em; color:var(--mark)}
+.lux-lp .plan h3{font-size:1.12rem; margin:8px 0 4px}
+.lux-lp .plan .who{font-size:.76rem; color:var(--text-3); margin-bottom:20px}
+.lux-lp .price{display:flex; align-items:baseline; gap:4px; font-variant-numeric:tabular-nums}
+.lux-lp .price .amt{font-size:clamp(1.9rem,3.4vw,2.4rem); font-weight:300; letter-spacing:-.03em; line-height:1.1}
+.lux-lp .price .cur{font-size:.95rem; font-weight:500}
+.lux-lp .price .per{font-size:.76rem; color:var(--text-3); margin-left:2px}
+.lux-lp .price-note{font-size:.74rem; color:var(--text-3); margin-top:6px; min-height:1.6em; font-variant-numeric:tabular-nums}
+.lux-lp .plan ul{margin:22px 0 26px; display:grid; gap:10px}
+.lux-lp .plan li{font-size:.85rem; line-height:1.8; color:var(--text-2); padding-left:19px; position:relative}
+.lux-lp .plan li::before{content:""; position:absolute; left:0; top:.72em; width:7px; height:1px; background:var(--line-2)}
+.lux-lp .plan li.hi{color:var(--text); font-weight:700}
+.lux-lp .plan li.hi::before{background:var(--accent); height:2px; top:.68em}
+.lux-lp .plan .foot{margin-top:auto}
+.lux-lp .plan .btn{width:100%; justify-content:center}
+.lux-lp .cap{display:inline-block; margin-top:14px; font-size:.72rem; color:var(--warn); background:var(--warn-tint); padding:4px 10px; border-radius:2px}
+.lux-lp .faq{border-top:1px solid var(--line)}
+.lux-lp .faq details{border-bottom:1px solid var(--line)}
+.lux-lp .faq summary{padding:19px 40px 19px 0; font-weight:700; font-size:.92rem; cursor:pointer; list-style:none; position:relative}
+.lux-lp .faq summary::-webkit-details-marker{display:none}
+.lux-lp .faq summary::after{content:"＋"; position:absolute; right:6px; top:18px; color:var(--mark); font-weight:400}
+.lux-lp .faq details[open] summary::after{content:"−"}
+.lux-lp .faq .ans{padding:0 40px 22px 0; color:var(--text-2); font-size:.87rem; line-height:2}
+.lux-lp .closing{background:var(--accent-tint); border-top:1px solid var(--accent-line); padding:clamp(52px,7vw,80px) 0; text-align:center}
+.lux-lp .closing h2{font-size:clamp(1.3rem,2.6vw,1.8rem); margin-bottom:14px; color:var(--accent-deep)}
+.lux-lp .closing p{color:var(--text-2); font-size:.92rem; max-width:34em; margin:0 auto 30px}
+@media (prefers-reduced-motion:reduce){.lux-lp *{transition:none !important; animation:none !important}}
+.page-id-15 #sidebar,.page-id-15 .entry-title,.page-id-15 .sns-share,.page-id-15 .sns-follow,.page-id-15 .date-tags,.page-id-15 .breadcrumb,.page-id-15 .article-footer,.page-id-15 .under-entry-content,.page-id-15 .footer-meta,.page-id-15 .entry-categories-tags,.page-id-15 .article-header{display:none!important}
+.page-id-15 #container{max-width:none!important;width:100%!important}
+.page-id-15 #content{margin:0!important;padding:0!important}
+.page-id-15 #content-in{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;display:block!important}
+.page-id-15 #main{width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
+.page-id-15 .article{margin:0!important;padding:0!important;background:transparent!important;border:0!important}
+.page-id-15 .entry-content{margin:0!important;padding:0!important}
+.page-id-15 .toc,.page-id-15 #toc,.page-id-15 .toc-center,.page-id-15 .wp-block-cocoon-blocks-toc{display:none!important}
+.lux-lp .price-note a{color:var(--accent);font-weight:700;text-decoration:none}
+.lux-lp .price-note a:hover{text-decoration:underline}
+.lux-lp .sec a[href="/tokushoho/"],.lux-lp .sec a[href="/services/"]{color:var(--accent);text-decoration:none}
+.lux-lp .courses{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-bottom:18px}
+.lux-lp .course{background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); padding:26px 24px 22px}
+.lux-lp .course .amt{display:flex; align-items:baseline; gap:4px; font-variant-numeric:tabular-nums; margin-bottom:8px}
+.lux-lp .course .amt b{font-size:2rem; font-weight:300; letter-spacing:-.03em; color:var(--accent); line-height:1.1}
+.lux-lp .course .amt i{font-style:normal; font-size:.95rem; font-weight:700; color:var(--accent)}
+.lux-lp .course h4{font-size:1rem; margin-bottom:8px}
+.lux-lp .course p{font-size:.84rem; color:var(--text-2); line-height:1.9}
+.lux-lp .opt{background:var(--accent-tint); border:1px solid var(--accent-line); border-radius:var(--r); padding:20px 24px; display:flex; flex-wrap:wrap; gap:8px 28px; align-items:baseline; margin-bottom:28px}
+.lux-lp .opt b{font-size:.95rem; color:var(--accent-deep)}
+.lux-lp .opt span{font-size:.84rem; color:var(--text-2); flex:1 1 260px}
+.lux-lp .steps{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); margin-bottom:22px}
+.lux-lp .step{background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); padding:20px 20px 18px}
+.lux-lp .step .n{font-size:.66rem; font-weight:900; letter-spacing:.18em; color:var(--mark); display:block; margin-bottom:8px}
+.lux-lp .step b{display:block; font-size:.92rem; margin-bottom:4px}
+.lux-lp .step span{font-size:.8rem; color:var(--text-2); line-height:1.85}
+.lux-lp .notes{background:var(--bg-2); border:1px solid var(--line); border-radius:var(--r); padding:18px 22px}
+.lux-lp .notes li{font-size:.82rem; color:var(--text-2); line-height:1.9; padding-left:16px; position:relative}
+.lux-lp .notes li::before{content:""; position:absolute; left:0; top:.8em; width:6px; height:1px; background:var(--line-2)}
+.lux-lp .hero .lede b{color:var(--text)}
+.lux-lp .why{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr))}
+.lux-lp .why div{background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); padding:24px 22px}
+.lux-lp .why .q{font-size:.66rem; font-weight:900; letter-spacing:.18em; color:var(--text-3); display:block; margin-bottom:10px}
+.lux-lp .why h3{font-size:1rem; line-height:1.7; margin-bottom:8px}
+.lux-lp .why p{font-size:.84rem; color:var(--text-2); line-height:1.9}
+.lux-lp .verdict{margin-top:28px; padding:26px 28px; background:var(--accent-tint); border:1px solid var(--accent-line); border-radius:var(--r)}
+.lux-lp .verdict h3{font-size:1.15rem; color:var(--accent-deep); margin-bottom:8px}
+.lux-lp .verdict p{font-size:.88rem; color:var(--text-2)}
+.lux-lp .sup{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.lux-lp .sup div{background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); padding:24px 22px 20px; display:flex; flex-direction:column}
+.lux-lp .sup .k{font-size:.66rem; font-weight:700; letter-spacing:.2em; color:var(--mark); display:block; margin-bottom:8px}
+.lux-lp .sup h3{font-size:1.02rem; line-height:1.6; margin-bottom:8px}
+.lux-lp .sup p{font-size:.84rem; color:var(--text-2); line-height:1.9; margin-bottom:12px}
+.lux-lp .sup .f{margin-top:auto; padding-top:10px; border-top:1px solid var(--line); font-size:.78rem; color:var(--text-3); font-variant-numeric:tabular-nums}
+.lux-lp .sup .f b{color:var(--accent); font-weight:700}
+.lux-lp .stages{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.lux-lp .stage{background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); padding:24px 22px}
+.lux-lp .stage .k{font-size:.66rem; font-weight:900; letter-spacing:.18em; color:var(--text-3); display:block; margin-bottom:8px}
+.lux-lp .stage h3{font-size:1rem; margin-bottom:10px}
+.lux-lp .stage li{font-size:.84rem; color:var(--text-2); line-height:1.85; padding-left:16px; position:relative}
+.lux-lp .stage li::before{content:""; position:absolute; left:0; top:.8em; width:6px; height:2px; background:var(--accent)}
+.lux-lp .menu{width:100%; border-collapse:collapse; background:#FFFFFF; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; font-size:.86rem}
+.lux-lp .menu th,.lux-lp .menu td{padding:14px 16px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; line-height:1.7}
+.lux-lp .menu th{font-size:.7rem; font-weight:700; letter-spacing:.12em; color:var(--text-3); background:var(--bg-2)}
+.lux-lp .menu tr:last-child td{border-bottom:0}
+.lux-lp .menu td b{display:block; font-size:.95rem}
+.lux-lp .menu td small{display:block; color:var(--text-2); font-size:.8rem}
+.lux-lp .menu .pr{white-space:nowrap; font-variant-numeric:tabular-nums}
+.lux-lp .menu .pr b{color:var(--accent); font-size:1.05rem}
+.lux-lp .menu .pr small{color:var(--text-3)}
+.lux-lp .menu .tag{display:inline-block; font-size:.64rem; font-weight:700; letter-spacing:.1em; color:var(--accent); background:var(--accent-tint); padding:2px 8px; border-radius:2px; margin-bottom:4px}
+.lux-lp .ship{display:grid; gap:1px; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); background:var(--line); border:1px solid var(--line); border-radius:var(--r); overflow:hidden; margin-top:14px}
+.lux-lp .ship div{background:#FFFFFF; padding:12px 14px; text-align:center}
+.lux-lp .ship b{display:block; font-size:.72rem; color:var(--text-3); letter-spacing:.08em}
+.lux-lp .ship span{font-size:.98rem; font-weight:700; color:var(--text); font-variant-numeric:tabular-nums}
+@media (max-width:640px){.lux-lp .menu thead{display:none} .lux-lp .menu tr{display:block; border-bottom:1px solid var(--line)} .lux-lp .menu td{display:block; border:0; padding:6px 16px} .lux-lp .menu td:first-child{padding-top:16px} .lux-lp .menu td:last-child{padding-bottom:16px}}
+</style>
+<div class="hero">
+<div class="wrap">
+<span class="label">LUXROUTE 修了生サロン</span></p>
+<h1>講座を修了したあとの物販を、<br />止めずに続けるためのサロンです。</h1>
+<p class="lede">修了生が物販を実行していく中で必要になるサポートをそろえています。<b>いつでも相談できる質問チャンネル、毎月の仕入れグループセミナー、仕入れを任せられる卸パック、撮影・発送の外注、販路ツールの会員割引。</b>必要なものだけを、自分の段階に合わせて使えます。月額3,980円、卸パックと外注は使った分だけ。</p>
+<div class="cta-row"><a class="btn btn-primary" href="#plans">月額3,980円ではじめる</a><a class="btn btn-outline" href="#support">サポート一覧を見る</a></div>
+<p class="hero-meta">修了生限定 ／ 初回のみ6ヶ月継続 ／ 以降はいつでもプラン変更・退会可</p>
+</div>
+</div>
+<div class="sec" id="why">
+<div class="wrap">
+<div class="sec-head"><span class="label">修了生の課題</span></p>
+<h2>修了後によくある、4つのつまずき</h2>
+<p class="sub">講座でやり方は身についています。それでも実際に回し始めると、次の4つで手が止まる人がほとんどです。</p>
+</div>
+<div class="why">
+<div><span class="q">01</span><h3>仕入れで迷って、買えない</h3><p>「この状態でこの値段は高いのか」を確かめる相手がいない。迷っている間に落札される。</p></div>
+<div><span class="q">02</span><h3>聞ける人がいない</h3><p>出品文、トラブル、資金配分。小さな疑問が溜まって、手が止まる。</p></div>
+<div><span class="q">03</span><h3>作業が追いつかない</h3><p>仕入れ、撮影、出品、発送。全部ひとりでやると、出品数が増えない。</p></div>
+<div><span class="q">04</span><h3>続かない</h3><p>誰も見ていないので、止めても誰も困らない。気づいたら数ヶ月さわっていない。</p></div>
+</div>
+<div class="verdict"><h3>この4つを、サロンのサポートで解決します。</h3><p>仕入れの迷いは毎月のグループセミナーと仕入れ同行で。質問は48時間以内に返る質問チャンネルで。作業量は卸パックと撮影・発送の外注で。継続は毎月決まった日に集まる場で。全部を使う必要はなく、自分に必要なものだけ選べます。</p></div>
+</div>
+</div>
+<div class="sec alt" id="support">
+<div class="wrap">
+<div class="sec-head"><span class="label">サポート内容</span></p>
+<h2>サロンで使える8つのサポート</h2>
+<p class="sub">「どんなときに使うか」と料金を、それぞれ書いています。</p>
+</div>
+<div class="sup">
+<div><span class="k">相談できる環境</span><h3>質問チャンネル・グループコンサル</h3><p>出品文の添削、トラブル対応、資金配分まで。質問チャンネルは48時間以内に回答。月1回のグループZOOMコンサル（90分）には案件を持ち込めます。利益報告はChatworkに送るだけ。</p><div class="f"><b>ベーシックに含む</b></div></div>
+<div><span class="k">仕入れのグループセミナー</span><h3>毎月の作業会（ZOOM）</h3><p>集まって各自の仕入れを進めながら「これ、いくらまで出すか」をその場で突き合わせる会。相場観をひとりで持たない。録画あり、途中入退室自由。</p><div class="f"><b>毎月開催</b>／ベーシックに含む</div></div>
+<div><span class="k">1対1で見てほしいとき</span><h3>仕入れ同行（ZOOM 1時間）</h3><p>オークション画面を共有しながら、状態判断・相場判断・入札上限の決め方をマンツーマンで。</p><div class="f"><b>4,980円</b>／回（会員価格・通常29,800円）</div></div>
+<div><span class="k">仕入れを任せたいとき</span><h3>卸パック</h3><p>コースの金額に見合う在庫をこちらで選定し、入金確認後7日以内に発送。忙しい月や、まず在庫を持って回し始めたいときに。</p><div class="f"><b>10万／30万／50万円</b>・銀行振込・<a href="#wholesale">詳細</a></div></div>
+<div><span class="k">自分で仕入れた商品の撮影を任せたいとき</span><h3>撮影外注（サロンの提携先）</h3><p>ご自身で仕入れた商品を提携先へ送ると、撮影・採寸・画像加工をして撮影データをLINEのアルバムで納品。商品到着から1週間以内が目安です。卸パックの撮影オプションとは別のサポートです。</p><div class="f"><b>660円</b>／点（税込）・利用は入会後にチャットで相談・<a href="#outsource">外注メニュー</a></div></div>
+<div><span class="k">発送まで任せたいとき</span><h3>撮影＋保管・発送代行</h3><p>撮影のあとそのまま提携先で保管し、売れたら購入者へ発送します。出品だけ自分でやって、商品に触らずに回せます。</p><div class="f"><b>1,100円</b>／点（税込）・利用は入会後にチャットで相談・<a href="#outsource">外注メニュー</a></div></div>
+<div><span class="k">販路を広げたいとき</span><h3>eベイブリッジ・CataScope 半額</h3><p>eBay×メルカリ併売ツールと、Catawiki 落札相場ツール。会員でいる間ずっと50%OFF。国内で売れ残った在庫の出口に。</p><div class="f"><b>50%OFF</b>／会員特典</div></div>
+<div><span class="k">在庫管理が追いつかないとき</span><h3>在庫フラッシュ 初期サポート</h3><p>30分無料・画面共有で初期設定。在庫と利益の管理を手書きから卒業。</p><div class="f"><b>30分無料</b>／会員特典</div></div>
+</div>
+</div>
+</div>
+<div class="sec" id="stages">
+<div class="wrap">
+<div class="sec-head"><span class="label">使い方の例</span></p>
+<h2>段階別・サポートの組み合わせ方</h2>
+<p class="sub">今の自分がどの段階かで、使うサポートが変わります。例を3つ挙げます。</p>
+</div>
+<div class="stages">
+<div class="stage"><span class="k">立ち上がり期</span><h3>まず在庫を持って、売る流れを作りたい</h3><ul><li>卸パック 10万円（撮影オプション ＋4,950円）で在庫と写真を手に入れる</li><li>出品文は質問チャンネルで添削</li><li>作業会で値付けを相談</li></ul></div>
+<div class="stage"><span class="k">自分で仕入れたい期</span><h3>仕入れの判断を、自分のものにしたい</h3><ul><li>作業会で毎月、相場観を突き合わせる</li><li>仕入れ同行で1対1で決め方を身につける</li><li>撮影は外注して、仕入れに時間を回す</li></ul></div>
+<div class="stage"><span class="k">量を増やす期</span><h3>出品数を増やして、月利を伸ばしたい</h3><ul><li>卸パック 30万〜50万円で在庫を確保（スタンダードは優先枠）</li><li>撮影＋保管・発送（1点1,100円）で商品に触らずに回す</li><li>eベイブリッジで eBay にも併売</li></ul></div>
+</div>
+</div>
+</div>
+<div class="sec" id="outsource">
+<div class="wrap">
+<div class="sec-head"><span class="label">外注メニュー</span></p>
+<h2>外注メニューと料金（撮影・保管・発送）</h2>
+<p class="sub">基本は撮影のみ。ご希望があれば保管・発送まで承ります。サロンの提携先に、そのままの価格で取り次ぎます。サロンの上乗せはありません。最低ロットなし、1点から。納期は商品到着から1週間以内が目安です。</p>
+</div>
+<table class="menu">
+<thead><tr><th>プラン</th><th>含まれる作業</th><th>1点あたり（税込）</th></tr></thead>
+<tbody>
+<tr><td><span class="tag">基本</span><b>撮影パック</b><small>出品・発送は自分でしたい方に</small></td><td>撮影・採寸・画像加工・撮影データ納品（LINEアルバム）</td><td class="pr"><b>660円</b></td></tr>
+<tr><td><b>撮影＋保管・発送</b><small>発送まで任せたい方に</small></td><td>撮影パックの内容＋保管・梱包・購入者への発送</td><td class="pr"><b>1,100円</b></td></tr>
+</tbody>
+</table>
+<ul class="notes" style="margin-top:14px">
+<li>保管は納品から1ヶ月無料。以降は 1点 110円／月（税込）、月末締め。</li>
+<li>商品を提携先へ送る送料はお客様のご負担です。発送作業は9時〜18時。</li>
+<li>検品は管理シートと照合してダブルチェック。アパレル・バッグ・アクセサリーなど、基本的にどんな商品でも対応。</li>
+<li>提携先の入会金・利用開始の条件は先方と調整のうえ決まります。ご利用を考えている方は、<b>サロン入会後に質問チャンネル（チャット）でご相談ください</b>。お支払いは銀行振込です。</li>
+</ul>
+<p class="sub" style="margin-top:22px; font-size:.84rem">購入者への送料も提携料金です（税込・九州発の目安）。</p>
+<div class="ship">
+<div><b>60サイズ</b><span>429円</span></div>
+<div><b>80サイズ</b><span>506円</span></div>
+<div><b>100サイズ</b><span>627円</span></div>
+<div><b>120サイズ</b><span>847円</span></div>
+<div><b>140サイズ</b><span>1,045円</span></div>
+</div>
+<div class="cta-row" style="margin-top:26px"><a class="btn btn-outline" href="#plans">入会して、チャットで外注を相談する</a></div>
+</div>
+</div>
+<div class="sec alt" id="wholesale">
+<div class="wrap">
+<div class="sec-head"><span class="label">卸パック</span></p>
+<h2>卸パックの内容と料金（10万・30万・50万円）</h2>
+<p class="sub">品目や点数を事前に約束するサービスではありません。そのときの相場と仕入れ状況を見て、コースの金額に見合う在庫をこちらで選定します。</p>
+</div>
+<div class="courses">
+<div class="course"><div class="amt"><b>10</b><i>万円</i></div><h4>まず数を売る段階に</h4><p>回転の速い価格帯を中心に選定します。出品と発送の流れを、まず自分の手で作りたい方向け。</p></div>
+<div class="course"><div class="amt"><b>30</b><i>万円</i></div><h4>1点の利益も取りにいく</h4><p>単価の高い構成を混ぜて選定します。撮影と説明文の質が、そのまま売値に返ってくる段階。</p></div>
+<div class="course"><div class="amt"><b>50</b><i>万円</i></div><h4>在庫をまとめて確保する</h4><p>月利30万以上を狙う在庫量。まとまった量を一度に確保したい方向け。スタンダード会員には優先枠があります。</p></div>
+</div>
+<div class="opt"><b>撮影オプション（コース別定額・税込）10万円 ＋4,950円／30万円 ＋14,850円／50万円 ＋24,750円</b><span>発送前に全点を撮影・採寸・画像加工をして、撮影データと一緒にお渡しします。届いたその日に出品できます。申込フォームで「撮影オプションを付ける」にチェックすると請求書に合算されます。</span></div>
+<div class="steps">
+<div class="step"><span class="n">STEP 1</span><b>申込フォームでコースを選ぶ</b><span>コースと撮影オプションの有無を選んで送信すると、請求書がその場で発行されます。</span></div>
+<div class="step"><span class="n">STEP 2</span><b>銀行振込</b><span>請求書の振込先へお振り込みください。入金確認をもって受付完了です（カード決済はありません）。</span></div>
+<div class="step"><span class="n">STEP 3</span><b>7日以内に発送</b><span>入金確認後7日以内に、商品（と画像データ）を納品書付きでお届けします。</span></div>
+</div>
+<ul class="notes">
+<li>サロンの月額とは別料金です。使いたいときだけ申し込めます。</li>
+<li>商品の中身は、そのときの相場と仕入れ状況で決まります。「この商品を何点」という指定はできません。</li>
+<li>お客様都合でのキャンセル・返品はお受けできません。</li>
+<li>届いた商品に当社の責に帰すべき不備があった場合は、到着後7日以内にご連絡ください。交換または返金で対応します。</li>
+</ul>
+<div class="cta-row" style="margin-top:26px"><a class="btn btn-primary" href="https://luxroute.net/wholesale/">卸パックを申し込む（請求書が自動発行されます）</a></div>
+</div>
+</div>
+<div class="sec" id="plans">
+<div class="wrap">
+<div class="sec-head"><span class="label">料金</span></p>
+<h2>料金プラン</h2>
+<p class="sub">料金は「月額」と「使った分だけの実費」の二層です。<b>月額</b>は相談環境と作業会の利用料。<b>卸パック・外注</b>は使った月だけ払う実費で、使わない月は0円です。<br />有料プランは<b>初回のみ6ヶ月継続</b>が条件で、以降は毎月更新になります。</p>
+</div>
+<div class="plans">
+<div class="plan feature"><span class="tier">TIER 1</span></p>
+<h3>ベーシック</h3>
+<p class="who">月利 5〜15万／立ち上がり</p>
+<div class="price"><span class="amt">3,980</span><span class="cur">円</span><span class="per">／月</span></div>
+<p class="price-note">または <a href="https://univa.cc/INM-jx">年払い 39,800円</a>（約2ヶ月分お得）</p>
+<ul>
+<li class="hi">毎月の作業会（ZOOM）</li>
+<li class="hi">質問チャンネル（48時間以内に回答）</li>
+<li>月1回 グループZOOMコンサル（90分）</li>
+<li>利益報告（Chatwork）</li>
+<li>卸パック・外注メニューを利用可（都度・上乗せなし）</li>
+<li>仕入れ同行 83%OFFチケット</li>
+<li>在庫フラッシュ初期サポート 30分無料</li>
+<li class="hi">eベイブリッジ・CataScope 半額</li>
+</ul>
+<div class="foot"><a class="btn btn-primary btn-sm" href="https://univa.cc/WlZxor">このプランで申し込む</a><span class="cap">初回のみ6ヶ月継続</span></div>
+</div>
+<div class="plan"><span class="tier">TIER 2</span></p>
+<h3>スタンダード</h3>
+<p class="who">月利 15万超／伸び盛り</p>
+<div class="price"><span class="amt">12,800</span><span class="cur">円</span><span class="per">／月</span></div>
+<p class="price-note">または <a href="https://univa.cc/D7ExbC">年払い 124,000円</a></p>
+<ul>
+<li class="hi">卸パックの優先枠</li>
+<li class="hi">仕入れ相談 無制限チケット</li>
+<li>ベーシックのすべて</li>
+<li>月2回 グループコンサル（90分）</li>
+<li>月1回 1on1（30分）</li>
+<li>非公開の仕入れ情報（月1更新）</li>
+</ul>
+<div class="foot"><a class="btn btn-outline btn-sm" href="https://univa.cc/GDikDJ">このプランで申し込む</a><span class="cap">定員 60名 ／ 初回のみ6ヶ月継続</span></div>
+</div>
+</div>
+</div>
+</div>
+<div class="sec alt">
+<div class="narrow">
+<div class="sec-head"><span class="label">FAQ</span></p>
+<h2>よくある質問</h2>
+</div>
+<div class="faq">
+<details open>
+<summary>卸パックは必ず使わないといけませんか？</summary>
+<div class="ans">いいえ。卸パックはサポートの一つで、仕入れを任せたい月だけ使う都度払いのオプションです。自分で仕入れる方は、作業会や仕入れ同行、撮影・発送の外注だけを使う形でも問題ありません。</div>
+</details>
+<details>
+<summary>卸パックはどんな商品が来ますか？</summary>
+<div class="ans">コースの金額に見合う在庫を、こちらで選定して納品します。内容はその時々の相場と仕入れ状況によって変わるため、品目や点数を事前に確定してのお約束はしていません。入金確認後7日以内に発送します。</div>
+</details>
+<details>
+<summary>卸パックの申し込みと支払いは？</summary>
+<div class="ans"><a href="https://luxroute.net/wholesale/">申込フォーム</a>で希望のコース（10万・30万・50万円）と撮影オプションの有無を選んで送信してください。請求書と振込先がその場で発行されますので、<b>銀行振込</b>でお支払いください。入金確認をもって受付完了となり、そこから7日以内に納品書付きで発送します。</div>
+</details>
+<details>
+<summary>撮影の外注は1点いくらですか？卸パックの撮影オプションとは違いますか？</summary>
+<div class="ans">別のサポートです。<b>外注メニュー</b>はご自身で仕入れた商品をサロンの提携先に送って任せるもので、撮影パックが<b>1点660円（税込）</b>、保管・発送まで任せる場合は1,100円。送料はお客様のご負担です。<b>卸パックの撮影オプション</b>は、卸パックで届く商品を発送前にこちらで全点撮影してお渡しするもので、コース別の定額（10万円 +4,950円／30万円 +14,850円／50万円 +24,750円）を請求書に合算します。</div>
+</details>
+<details>
+<summary>外注の料金はサロンの手数料が乗っていますか？</summary>
+<div class="ans">乗っていません。サロンの提携先の料金そのままで取り次ぎます。入会金など利用開始の条件は先方と調整のうえ決まるため、サロン入会後に質問チャンネル（チャット）でご相談ください。お支払いは銀行振込です。</div>
+</details>
+<details>
+<summary>eベイブリッジと CataScope の半額は、どうすれば使えますか？</summary>
+<div class="ans">ベーシック以上の会員に、Chatworkで会員専用の申込URLと割引コードをお渡しします。そこから登録すると、eベイブリッジ（eBay×メルカリ併売ツール）と CataScope（Catawiki 落札相場ツール）の月額が、会員でいる間ずっと50%OFFになります。各ツールの利用料は、それぞれのツールへ直接お支払いください。サロンを退会すると翌月から通常料金に戻ります。</div>
+</details>
+<details>
+<summary>作業会に出られない月があります。</summary>
+<div class="ans">すべて録画してアーカイブに残します。出席は必須ではなく、途中入退室も自由です。</div>
+</details>
+<details>
+<summary>講座を修了していなくても入れますか？</summary>
+<div class="ans">修了生限定のサロンです。修了後に講座のChatworkからお申し込みください。</div>
+</details>
+<details>
+<summary>初回の6ヶ月継続とは何ですか？</summary>
+<div class="ans">はじめてご入会いただく際は、6ヶ月間の継続が条件になります。物販は仕入れから売却まで1サイクル約2ヶ月。6ヶ月は3サイクル分で、3回まわしてはじめて自分の判断の精度が見えるためです。<b>6ヶ月を過ぎたあとは毎月更新に切り替わり、退会もプラン変更もいつでもできます</b>。</div>
+</details>
+<details>
+<summary>解約したいときは？</summary>
+<div class="ans">初回の6ヶ月が経過したあとは、いつでも解約できます。<b>解約された月は日割り計算にならず、その月の月額が全額かかります</b>。解約後も、購入済み教材の閲覧は残ります。</div>
+</details>
+<details>
+<summary>支払い方法は？</summary>
+<div class="ans">月額・年払いプランはクレジットカードの自動決済です。卸パックと撮影・発送の外注は銀行振込、仕入れ同行チケットはカード決済（都度）です。領収書が必要な場合は、Chatworkからお申し付けください。</div>
+</details>
+</div>
+</div>
+</div>
+<div class="closing">
+<div class="narrow">
+<h2>まずはベーシック（月額3,980円）から。</h2>
+<p>質問チャンネル・毎月のグループセミナー・ツール割引はベーシックに含まれます。卸パックと外注は、必要になった月に追加するだけです。</p>
+<p><a class="btn btn-primary" href="#plans">月額3,980円ではじめる</a>
+</div>
+</div>
+<div class="sec" style="padding-top:0">
+<div class="narrow" style="text-align:center">
+<p style="font-size:.8rem;color:var(--text-3)"><a href="/tokushoho/">特定商取引法に基づく表記</a> ／ <a href="/services/">卸パック・外注メニュー</a></p>
+</div>
+</div>
+</div>
+<p><!-- 決済リンクは各ボタンの href に直接記載（UnivaPay リンクフォーム）。変更時は href を書き換えること。
+     ベーシック月額 https://univa.cc/WlZxor ／ ベーシック年払 https://univa.cc/INM-jx
+     スタンダード月額 https://univa.cc/GDikDJ ／ スタンダード年払 https://univa.cc/D7ExbC
+     卸パック(10/30/50万)は銀行振込・申込フォーム https://luxroute.net/wholesale/ で受付。サポート窓口は Chatwork（2026-11-22） --></p>
